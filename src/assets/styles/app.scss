@@ -1,39 +1,17 @@
+@use "./material-icons";
 @use "./starter-complet";
-
-// @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap");
-// @import url("https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap");
 
 @font-face {
     font-family: "EBGaramont";
     src: url('../fonts/static/EBGaramond-Regular.ttf') format('truetype');
 }
 
-// @font-face {
-//     font-family: "Imperial Script";
-//     src: url('../fonts/ImperialScript-Regular.ttf') format('truetype');
-// }
-
 :root {
     --body-font: "EBGaramond", sans-serif;
-    // --italic-font: "Imperial Script";
+    --theme-color: var(--teal-5);
 }
 
 body {
     margin: 0;
     font-family: var(--body-font);
-}
-
-
-@media all and (min-width: 640px) {
-
-    body .ui-container {
-
-        & .ui-central-btn-ctnr .ui-central-btn {
-            font-size: 3rem;
-        }
-
-        & .ui-header .ui-header-nav {
-            display: block;
-        }
-    }
 }

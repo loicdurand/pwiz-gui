@@ -2,8 +2,8 @@
 import { ref } from "vue";
 import { invoke } from "@tauri-apps/api/core";
 
-const greetMsg = ref("");
-const name = ref("");
+// const greetMsg = ref("");
+// const name = ref("");
 
 async function greet() {
   // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
@@ -12,43 +12,44 @@ async function greet() {
 </script>
 
 <template>
+
   <main class="container">
-    <h1>Welcome to Tauri + Vue</h1>
 
-    <div class="row">
-      <a href="https://vitejs.dev" target="_blank">
-        <img src="/vite.svg" class="logo vite" alt="Vite logo" />
-      </a>
-      <a href="https://tauri.app" target="_blank">
-        <img src="/tauri.svg" class="logo tauri" alt="Tauri logo" />
-      </a>
-      <a href="https://vuejs.org/" target="_blank">
-        <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-      </a>
+    <header class="app-header">
+
+      <div class="app-search-wrap">
+        <div class="search">
+          <input
+            type="text"
+            class="search-term"
+            placeholder="Termes à rechercher"
+          >
+          <button
+            type="submit"
+            class="search-button"
+          >
+            <i class="material-icons">search</i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="row app-list-of-articles">
+
+      <article class="col s12 app-card">
+        <span class="card-preview">illustration</span>
+        <div class="card-content">titre</div>
+        <footer class="card-footer">footer</footer>
+      </article>
+
     </div>
-    <p>Click on the Tauri, Vite, and Vue logos to learn more.</p>
 
-    <form class="row" @submit.prevent="greet">
-      <input id="greet-input" v-model="name" placeholder="Enter a name..." />
-      <button type="submit">Greet</button>
-    </form>
-    <p>{{ greetMsg }}</p>
   </main>
 </template>
 
-<style scoped>
-.logo.vite:hover {
-  filter: drop-shadow(0 0 2em #747bff);
-}
-
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #249b73);
-}
-
-</style>
-<style>
+<style lang="scss">
 :root {
-  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+  font-family: EBGaramont, Helvetica, Arial, sans-serif;
   font-size: 16px;
   line-height: 24px;
   font-weight: 400;
@@ -70,91 +71,106 @@ async function greet() {
   flex-direction: column;
   justify-content: center;
   text-align: center;
-}
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: 0.75s;
-}
+  // HEADER
+  & .app-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 50px;
+    width: 100%;
+    border-bottom: 1px solid;
 
-.logo.tauri:hover {
-  filter: drop-shadow(0 0 2em #24c8db);
-}
+    // SEARCH
+    & .app-search-wrap {
+      width: 70%;
+      position: absolute;
+      top: 6px;
+      left: 15%;
 
-.row {
-  display: flex;
-  justify-content: center;
-}
+      & .search {
+        width: 100%;
+        position: relative;
+        display: flex;
+      }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
+      & .search-term {
+        width: 100%;
+        border: 2px solid var(--theme-color);
+        border-right: none;
+        padding: 5px;
+        height: 36px;
+        border-radius: 5px 0 0 5px;
+        outline: none;
+        color: #9DBFAF;
 
-a:hover {
-  color: #535bf2;
-}
+        &::placeholder {
+          text-align: center;
+        }
 
-h1 {
-  text-align: center;
-}
+        &:focus {
+          color: var(--theme-color);
+        }
+      }
 
-input,
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  color: #0f0f0f;
-  background-color: #ffffff;
-  transition: border-color 0.25s;
-  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
-}
+      & .search-button {
+        width: 36px;
+        height: 36px;
+        border: 1px solid var(--theme-color);
+        background: var(--theme-color);
+        text-align: center;
+        color: #fff;
+        border-radius: 0 5px 5px 0;
+        cursor: pointer;
+        font-size: 20px;
+      }
+    }
 
-button {
-  cursor: pointer;
-}
-
-button:hover {
-  border-color: #396cd8;
-}
-button:active {
-  border-color: #396cd8;
-  background-color: #e8e8e8;
-}
-
-input,
-button {
-  outline: none;
-}
-
-#greet-input {
-  margin-right: 5px;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    color: #f6f6f6;
-    background-color: #2f2f2f;
+    // fin SEARCH
   }
 
-  a:hover {
-    color: #24c8db;
+  // fin HEADER
+
+  // LIST OF ARTICLES
+  & .app-list-of-articles {
+    margin-top: 50px;
+
+    // CARD
+    & .app-card {
+      height: 250px;
+      width: 100%;
+      border: 1px solid;
+      background: white;
+      display: inline-block;
+      margin: auto;
+      border-radius: 19px;
+      position: relative;
+      text-align: center;
+      box-shadow: -1px 15px 30px -12px black;
+      z-index: 9999;
+
+      & .card-preview {
+        position: relative;
+        height: 230px;
+        margin-bottom: 35px;
+        border-top-left-radius: 14px;
+        border-top-right-radius: 14px;
+      }
+
+      & .card-content {
+        position: relative;
+        height: 230px;
+        margin-bottom: 35px;
+        border-top-left-radius: 14px;
+        border-top-right-radius: 14px;
+      }
+
+      & .card-footer {}
+    }
+
+    // fin CARD
   }
 
-  input,
-  button {
-    color: #ffffff;
-    background-color: #0f0f0f98;
-  }
-  button:active {
-    background-color: #0f0f0f69;
-  }
+  // fin LIST OF ARTICLES
 }
-
 </style>
