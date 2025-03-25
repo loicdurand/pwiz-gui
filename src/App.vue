@@ -36,11 +36,79 @@ async function greet() {
 
     <div class="row app-list-of-articles">
 
-      <article class="col s12 app-card">
-        <span class="card-preview">illustration</span>
-        <div class="card-content">titre</div>
-        <footer class="card-footer">footer</footer>
-      </article>
+      <div class="col s4">
+        <article class="app-card">
+          <div class="card-preview">
+            <button
+              class="copy-button"
+              type="button"
+            >
+              <i class="material-icons" title="Copier">content_copy</i>
+            </button>
+            <div class="card-window">
+              <p class="terminal">
+                <span class="shebang">#!/bin/bash</span>
+                <br>
+                <span class="green">~</span> <span class="blue">❯</span> <span class="yellow">cd /home</span>
+                <br>
+                <span class="green">~</span> <span class="blue">❯</span> <span class="yellow">chown $USER: /home/$USER</span>
+                <br>
+                <span class="green">~</span> <span class="blue">❯</span> <span class="yellow">ls -alH</span>
+              </p>
+            </div>
+          </div>
+          <div class="card-content">
+            <h2 class="card-title">Titre de l'article</h2>
+            <ul class="card-tags">
+              <ul class="card-tags-list">
+                <li class="tag">
+                  tutoriel
+                </li>
+                <li class="tag">
+                  rust
+                </li>
+                <li class="tag">
+                  tauri
+                </li>
+                <li class="tag">
+                  typescript
+                </li>
+                <li class="tag">
+                  ts
+                </li>
+                <li class="tag">
+                  js
+                </li>
+                <li class="tag">
+                  tag 3
+                </li>
+                <li class="tag">
+                  tag 4
+                </li><li class="tag">
+                  tag 1
+                </li>
+                <li class="tag">
+                  tag 2
+                </li>
+                <li class="tag">
+                  tag 3
+                </li>
+                <li class="tag">
+                  tag 4
+                </li>
+              </ul>
+            </ul>
+          </div>
+          <footer class="card-footer">
+            <button
+              class="more-button"
+              type="button"
+            >
+              <i class="material-icons" title="Afficher le menu">more_horiz</i>
+            </button>
+          </footer>
+        </article>
+      </div>
 
     </div>
 
@@ -133,13 +201,12 @@ async function greet() {
 
   // LIST OF ARTICLES
   & .app-list-of-articles {
-    margin-top: 50px;
+    margin-top: 0px;
 
     // CARD
     & .app-card {
-      height: 250px;
-      width: 100%;
-      border: 1px solid;
+      height: 40vh;
+      min-width: 100%;
       background: white;
       display: inline-block;
       margin: auto;
@@ -149,23 +216,108 @@ async function greet() {
       box-shadow: -1px 15px 30px -12px black;
       z-index: 9999;
 
+      // preview
       & .card-preview {
         position: relative;
-        height: 230px;
-        margin-bottom: 35px;
+        height: 22vh;
+        margin-bottom: 0;
         border-top-left-radius: 14px;
         border-top-right-radius: 14px;
+        & .copy-button{
+          position: absolute;
+          top: .5rem ;
+          right: .5rem;
+          background: none;
+          border: none;
+          cursor: pointer;
+          color: var(--grey-4);
+        }
+        & .card-window {
+          height: 100%;
+          align-items: center;
+          & .terminal {
+            background-color: var(--purple-10);
+            border-top-left-radius: 14px;
+            border-top-right-radius: 14px;
+            font-family: 'Fira Code', monospace;
+            font-size: .85rem;
+            color: white;
+            margin: 0;
+            padding: .65rem 1rem 1rem 1rem;
+            text-align: left;
+            height: 100%;
+            .shebang {
+              color: var(--grey-6);
+              font-style: italic;
+              font-size: .75rem;
+            }
+            .green {
+              color: #00ff00;
+            }
+            .blue {
+              color: #0000ff;
+            }
+            .yellow {
+              color: #ffff00;
+            }
+          }
+        }
       }
 
+      // fin preview
+      // content
       & .card-content {
         position: relative;
-        height: 230px;
-        margin-bottom: 35px;
-        border-top-left-radius: 14px;
-        border-top-right-radius: 14px;
+        height: 14vh;
+        margin-top: 0;
+        border-bottom: 1px solid var(--grey-3);
+
+        & .card-title {
+          font-weight: 700;
+          padding: 6px 0 0 0;
+          margin: 0;
+          line-height: 2.2vh;
+        }
+
+        & .card-tags {
+          height: 10.8vh;
+          padding: 0;
+
+          & .card-tags-list {
+            margin-left: 0;
+            padding-left: 0;
+            li.tag {
+              display: inline-block;
+              padding: 0 5px;
+              margin: 0 5px;
+              background: var(--theme-color);
+              color: white;
+              border-radius: 5px;
+              font-size: 12px;
+              line-height: 20px;
+            }
+          }
+        }
       }
 
-      & .card-footer {}
+      // fin content
+      // footer
+      & .card-footer {
+        position: relative;
+
+        & .more-button {
+          position: absolute;
+          vertical-align: middle;
+          cursor: pointer;
+          height: 4vh;
+          width: 4vh;
+          right: 0;
+          border: none;
+          background: none;
+        }
+      }
+
+      // fin footer 
     }
 
     // fin CARD
