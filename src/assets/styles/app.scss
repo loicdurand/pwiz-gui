@@ -7,11 +7,46 @@
 // }
 
 :root {
-    --body-font: /*"EBGaramond",*/ sans-serif;
+    --body-font: sans-serif;
     --theme-color: var(--teal-5);
+    font-family: EBGaramont, Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 400;
+
+    color: #0f0f0f;
+    background-color: #f6f6f6;
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
 }
 
 body {
     margin: 0;
     font-family: var(--body-font);
+}
+
+.icon-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.container {
+    margin: 0;
+    padding-top: 10vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+
+    // LIST OF ARTICLES
+    & .app-list-of-articles {
+        margin-top: 20px;
+    }
+
+    // fin LIST OF ARTICLES
 }
