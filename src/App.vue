@@ -36,14 +36,17 @@ async function greet() {
 
     <div class="row app-list-of-articles">
 
-      <div class="col s4">
+      <div class="col s6 m4 l3">
         <article class="app-card">
           <div class="card-preview">
             <button
-              class="copy-button"
+              class="icon-button copy-button"
               type="button"
             >
-              <i class="material-icons" title="Copier">content_copy</i>
+              <i
+                class="material-icons"
+                title="Copier"
+              >content_copy</i>
             </button>
             <div class="card-window">
               <p class="terminal">
@@ -51,7 +54,8 @@ async function greet() {
                 <br>
                 <span class="green">~</span> <span class="blue">❯</span> <span class="yellow">cd /home</span>
                 <br>
-                <span class="green">~</span> <span class="blue">❯</span> <span class="yellow">chown $USER: /home/$USER</span>
+                <span class="green">~</span> <span class="blue">❯</span> <span class="yellow">chown $USER:
+                  /home/$USER</span>
                 <br>
                 <span class="green">~</span> <span class="blue">❯</span> <span class="yellow">ls -alH</span>
               </p>
@@ -84,7 +88,8 @@ async function greet() {
                 </li>
                 <li class="tag">
                   tag 4
-                </li><li class="tag">
+                </li>
+                <li class="tag">
                   tag 1
                 </li>
                 <li class="tag">
@@ -101,10 +106,13 @@ async function greet() {
           </div>
           <footer class="card-footer">
             <button
-              class="more-button"
+              class="icon-button more-button"
               type="button"
             >
-              <i class="material-icons" title="Afficher le menu">more_horiz</i>
+              <i
+                class="material-icons"
+                title="Afficher le menu"
+              >more_horiz</i>
             </button>
           </footer>
         </article>
@@ -132,6 +140,12 @@ async function greet() {
   -webkit-text-size-adjust: 100%;
 }
 
+.icon-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
 .container {
   margin: 0;
   padding-top: 10vh;
@@ -145,9 +159,9 @@ async function greet() {
     position: fixed;
     top: 0;
     left: 0;
-    height: 50px;
+    height: 100px;
     width: 100%;
-    border-bottom: 1px solid;
+    border-bottom: 1px solid var(--grey-3);
 
     // SEARCH
     & .app-search-wrap {
@@ -201,7 +215,7 @@ async function greet() {
 
   // LIST OF ARTICLES
   & .app-list-of-articles {
-    margin-top: 0px;
+    margin-top: 20px;
 
     // CARD
     & .app-card {
@@ -223,18 +237,18 @@ async function greet() {
         margin-bottom: 0;
         border-top-left-radius: 14px;
         border-top-right-radius: 14px;
-        & .copy-button{
+
+        & .copy-button {
           position: absolute;
-          top: .5rem ;
+          top: .5rem;
           right: .5rem;
-          background: none;
-          border: none;
-          cursor: pointer;
           color: var(--grey-4);
         }
+
         & .card-window {
           height: 100%;
           align-items: center;
+
           & .terminal {
             background-color: var(--purple-10);
             border-top-left-radius: 14px;
@@ -246,17 +260,21 @@ async function greet() {
             padding: .65rem 1rem 1rem 1rem;
             text-align: left;
             height: 100%;
+
             .shebang {
               color: var(--grey-6);
               font-style: italic;
               font-size: .75rem;
             }
+
             .green {
               color: #00ff00;
             }
+
             .blue {
               color: #0000ff;
             }
+
             .yellow {
               color: #ffff00;
             }
@@ -286,6 +304,7 @@ async function greet() {
           & .card-tags-list {
             margin-left: 0;
             padding-left: 0;
+
             li.tag {
               display: inline-block;
               padding: 0 5px;
@@ -308,12 +327,9 @@ async function greet() {
         & .more-button {
           position: absolute;
           vertical-align: middle;
-          cursor: pointer;
           height: 4vh;
           width: 4vh;
           right: 0;
-          border: none;
-          background: none;
         }
       }
 
