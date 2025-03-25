@@ -1,13 +1,13 @@
 @use "./material-icons";
 @use "./starter-complet";
 
-@font-face {
-    font-family: "EBGaramont";
-    src: url('../fonts/static/EBGaramond-Regular.ttf') format('truetype');
-}
+// @font-face {
+//     font-family: "EBGaramond";
+//     src: url('../fonts/static/EBGaramond-Regular.ttf') format('truetype');
+// }
 
 :root {
-    --body-font: "EBGaramond", sans-serif;
+    --body-font: /*"EBGaramond",*/ sans-serif;
     --theme-color: var(--teal-5);
 }
 
