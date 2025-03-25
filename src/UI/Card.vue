@@ -3,6 +3,10 @@
 export default {
   name: 'Card',
   props: {
+    id: {
+      type: Number,
+      required: false
+    },
     title: {
       type: String,
       required: true
@@ -16,7 +20,10 @@ export default {
 </script>
 
 <template>
-  <article class="app-card">
+  <article
+    class="app-card"
+    :class="{ mode_edition: edition }"
+  >
     <div class="card-preview">
       <button
         class="icon-button copy-button"
@@ -28,20 +35,23 @@ export default {
         >content_copy</i>
       </button>
       <div class="card-window">
-        
+
         <slot></slot>
 
       </div>
     </div>
     <div class="card-content">
-      <h2 class="card-title">{{title}}</h2>
+      <h2 class="card-title">{{ title }}</h2>
       <ul class="card-tags">
         <ul class="card-tags-list">
 
-          <li v-for="tag in tags" class="tag">
+          <li
+            v-for="tag in tags"
+            class="tag"
+          >
             {{ tag }}
           </li>
-          
+
         </ul>
       </ul>
     </div>
@@ -66,7 +76,7 @@ export default {
   min-width: 100%;
   background: white;
   display: inline-block;
-  margin: auto;
+  margin: auto auto 1rem auto;
   border-radius: 19px;
   position: relative;
   text-align: center;

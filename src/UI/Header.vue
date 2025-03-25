@@ -1,6 +1,18 @@
 <script lang="ts">
+
 export default {
-  name: 'Header'
+  name: 'Header',
+  props: {
+    mode: Object,
+    posts: Array
+  },
+  methods: {
+    create_post(e: Event) {
+      const target = e.currentTarget as HTMLButtonElement;
+      target.disabled = true;
+      this.mode.edition = true;
+    }
+  }
 }
 </script>
 
@@ -21,6 +33,20 @@ export default {
         </button>
       </div>
     </div>
+    <nav class="app-nav-wrap row">
+      <ul>
+        <li>
+          <button
+            type="button"
+            class="icon-button col app-nav-button"
+            @click="create_post"
+          >
+            <i class="material-icons">add</i>
+            <span class="button-text">Ajouter une fiche</span>
+          </button>
+        </li>
+      </ul>
+    </nav>
   </header>
 
 </template>
@@ -30,7 +56,7 @@ export default {
   position: fixed;
   top: 0;
   left: 0;
-  height: 100px;
+  height: 90px;
   width: 100%;
   border-bottom: 1px solid var(--grey-3);
 
@@ -76,6 +102,44 @@ export default {
       border-radius: 0 5px 5px 0;
       cursor: pointer;
       font-size: 20px;
+    }
+  }
+
+  & .app-nav-wrap {
+    position: fixed;
+    width: 100%;
+    top: 50px;
+    height: 30px;
+
+    & ul li {
+      list-style-type: none;
+      padding: 0;
+      position: relative;
+
+      & .app-nav-button {
+        padding: 0;
+        margin: -16px 6px 0 -40px;
+        height: 30px;
+        max-height: 30px;
+        position: relative;
+        cursor: initial;
+
+        &:not(:disabled) {
+          cursor: pointer;
+
+          &:hover,
+          &:hover span {
+            font-weight: 700;
+          }
+        }
+
+        & .button-text {
+          position: absolute;
+          width: 100px;
+          height: 30px;
+          padding-top: 5px;
+        }
+      }
     }
   }
 

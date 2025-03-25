@@ -8,6 +8,12 @@ import Terminal from "./UI/Terminal.vue";
 
 // const greetMsg = ref("");
 // const name = ref("");
+const mode = ref({ edition: false });
+const posts = ref([]);
+
+async function get_posts() {
+  posts = await invoke('get_posts');
+}
 
 async function greet() {
   // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
@@ -17,20 +23,27 @@ async function greet() {
 
 <template>
 
-  <main class="container">
+  <main v-if="!mode.edition" class="container">
 
-    <Header />
+    <Header :posts="posts" :mode="mode" />
 
     <div class="row app-list-of-articles">
 
-      <div class="col s6 m4 l3">
+      <div
+        v-for="post in posts"
+        class="col s6 m4 l3"
+      >
 
         <Card
-          title="Titre de l'article"
-          :tags="['tutoriel', 'rust', 'tauri', 'vue', 'ts', 'js', 'typescript', 'javascript']"
+          :key="post.id"
+          :title="post.title"
+          :tags="post.tags"
         >
 
-          <Terminal shebang="sh" :lines="['echo Hello, World!']" />
+          <Terminal
+            shebang="sh"
+            :lines="['echo Hello, World!']"
+          />
 
         </Card>
 
@@ -39,4 +52,9 @@ async function greet() {
     </div>
 
   </main>
+
+  <main v-else class="container">
+    <h1>en mode edition...</h1>
+  </main>
+
 </template>
