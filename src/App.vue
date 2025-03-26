@@ -8,7 +8,7 @@ import Terminal from "./UI/Terminal.vue";
 
 // const greetMsg = ref("");
 // const name = ref("");
-const mode = ref({ edition: false });
+const mode = ref({ edition: true });
 const posts = ref([]);
 
 async function get_posts() {
@@ -23,9 +23,15 @@ async function greet() {
 
 <template>
 
-  <main v-if="!mode.edition" class="container">
+  <main
+    v-if="!mode.edition"
+    class="container"
+  >
 
-    <Header :posts="posts" :mode="mode" />
+    <Header
+      :posts="posts"
+      :mode="mode"
+    />
 
     <div class="row app-list-of-articles">
 
@@ -53,8 +59,40 @@ async function greet() {
 
   </main>
 
-  <main v-else class="container">
-    <h1>en mode edition...</h1>
+  <main
+    v-else
+    class="container"
+  >
+    <div class="row app-list-of-articles mode-edition">
+
+      <div class="col s12">
+
+        <Card
+          :mode="mode"
+          title="post.title"
+          :tags="['post', 'tags']"
+        >
+
+          <Terminal
+            :mode="mode"
+            shebang="sh"
+            :lines="['']"
+          />
+
+        </Card>
+
+      </div>
+    </div>
   </main>
 
 </template>
+
+<style lang="scss">
+.editable {
+  height: 90vh !important;
+
+  & .card-preview {
+    height: 62.5vh !important; //67px
+  }
+}
+</style>

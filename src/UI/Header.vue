@@ -135,9 +135,10 @@ export default {
 
         & .button-text {
           position: absolute;
-          width: 100px;
+          width: 150px;
           height: 30px;
-          padding-top: 5px;
+          padding-top: .165rem;//5px
+          text-align: left;
         }
       }
     }

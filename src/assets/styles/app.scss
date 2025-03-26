@@ -46,6 +46,15 @@ body {
     // LIST OF ARTICLES
     & .app-list-of-articles {
         margin-top: 50px;
+
+        &.mode-edition {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            margin: 0;
+            padding: 1rem;
+        }
     }
 
     // fin LIST OF ARTICLES

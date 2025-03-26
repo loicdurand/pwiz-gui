@@ -2,6 +2,7 @@
 export default {
   name: 'Terminal',
   props: {
+    mode: Object,
     shebang: {
       type: String,
       required: true
@@ -15,21 +16,31 @@ export default {
 </script>
 
 <template>
-  <p class="terminal">
+  <code class="terminal">
     <span class="shebang" v-if="shebang === 'sh'">#!/bin/sh</span>
     <span class="shebang" v-else>#!/bin/bash</span>
     <br>
-    <span v-for="line in lines">
-      <span class="green">~</span> <span class="blue">❯</span> <span class="yellow">{{ line }}</span>
+    <span v-for="(line,index) in lines">
+      <span class="green">~&nbsp;</span><span class="blue">❯&nbsp;</span>
+      
+      <span v-if="!mode.edition" class="yellow">{{ line }}</span>
+      <input v-else
+          type="text"
+          :name="'line_' + index"
+          class="yellow"
+          :value="line"
+        >
+
       <br>
     </span>
-  </p>
+  </code>
 
 </template>
 
 <style lang="scss" scoped>
 .terminal {
-  background-color: var(--purple-10);
+  display: block;
+  background-color:#263238;// var(--purple-10);
   border-top-left-radius: 14px;
   border-top-right-radius: 14px;
   font-family: 'Fira Code', monospace;
@@ -39,7 +50,6 @@ export default {
   padding: .65rem 1rem 1rem 1rem;
   text-align: left;
   height: 100%;
-
 
   .shebang {
     color: var(--grey-6);
@@ -57,6 +67,13 @@ export default {
 
   .yellow {
     color: #ffff00;
+    &[type="text"] {
+      background-color:  rgba(255,255,255,.05);
+      border: 1px solid rgba(204,204,204,.1);
+      width: calc(100% - 4rem);
+      font-size: .85rem;
+      outline: none;
+    }
   }
 }
 </style>

@@ -3,6 +3,7 @@
 export default {
   name: 'Card',
   props: {
+    mode: Object,
     id: {
       type: Number,
       required: false
@@ -22,7 +23,7 @@ export default {
 <template>
   <article
     class="app-card"
-    :class="{ mode_edition: edition }"
+    :class="{ editable: mode.edition }"
   >
     <div class="card-preview">
       <button
@@ -30,9 +31,18 @@ export default {
         type="button"
       >
         <i
+          v-if="!mode.edition"
           class="material-icons"
           title="Copier"
         >content_copy</i>
+
+        <i
+          v-else
+          class="material-icons"
+          title="Fermer"
+          @click="mode.edition = false"
+        >close</i>
+
       </button>
       <div class="card-window">
 
