@@ -8,7 +8,8 @@
 
 :root {
     --body-font: sans-serif;
-    --theme-color: var(--teal-5);
+    --theme-color: var(--blue-5);
+    --input-color: #9DBFAF;
     font-family: EBGaramont, Helvetica, Arial, sans-serif;
     font-size: 16px;
     line-height: 24px;
@@ -53,7 +54,7 @@ body {
             left: 0;
             width: 100%;
             margin: 0;
-            padding: 1rem;
+            padding: 0;
         }
     }
 

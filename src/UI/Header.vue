@@ -81,7 +81,7 @@ export default {
       height: 36px;
       border-radius: 5px 0 0 5px;
       outline: none;
-      color: #9DBFAF;
+      color: var(--input-color);
 
       &::placeholder {
         text-align: center;

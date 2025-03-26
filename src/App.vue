@@ -67,11 +67,7 @@ async function greet() {
 
       <div class="col s12">
 
-        <Card
-          :mode="mode"
-          title="post.title"
-          :tags="['post', 'tags']"
-        >
+        <Card :mode="mode" >
 
           <Terminal
             :mode="mode"
@@ -86,13 +82,3 @@ async function greet() {
   </main>
 
 </template>
-
-<style lang="scss">
-.editable {
-  height: 90vh !important;
-
-  & .card-preview {
-    height: 62.5vh !important; //67px
-  }
-}
-</style>

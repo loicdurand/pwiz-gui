@@ -10,11 +10,11 @@ export default {
     },
     title: {
       type: String,
-      required: true
+      required: false
     },
     tags: {
       type: Array<String>,
-      required: true
+      required: false
     }
   }
 }
@@ -51,7 +51,29 @@ export default {
       </div>
     </div>
     <div class="card-content">
-      <h2 class="card-title">{{ title }}</h2>
+      <h2
+        v-if="!mode.edition"
+        class="card-title"
+      >{{ title }}</h2>
+      <div
+        v-else
+        class="card-title"
+      >
+        <div class="omrs-input-group">
+          <label class="omrs-input-underlined">
+            <input
+              type="text"
+              name="title"
+              required
+            >
+            <span
+              class="omrs-input-label"
+              for="title"
+            >Titre de la fiche</span>
+
+          </label>
+        </div>
+      </div>
       <ul class="card-tags">
         <ul class="card-tags-list">
 
@@ -168,5 +190,90 @@ export default {
   }
 
   /* fin footer */
+
+  /* mode edition */
+  &.editable {
+    height: calc(100vh - 2rem) !important;
+
+    & .card-preview {
+      height: 62.5vh !important; //67px
+    }
+
+    & .card-title {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-around;
+      line-height: 0 !important;
+      margin-top: 2rem;
+
+      :root {
+        --omrs-color-ink-low-contrast: rgba(60, 60, 67, 0.3);
+        --omrs-color-ink-medium-contrast: rgba(19, 19, 21, 0.6);
+        --omrs-color-interaction: #1e4bd1;
+        --omrs-color-interaction-minus-two: rgba(73, 133, 224, 0.12);
+        --omrs-color-ink-high-contrast: #121212;
+      }
+
+      & div.omrs-input-group {
+        margin-bottom: 5px;
+        position: relative;
+        width: 20.4375rem;
+
+        /* Input*/
+        & .omrs-input-underlined>input:empty {
+          border: none;
+          border-bottom: 0.125rem solid var(--theme-color);
+          width: 100%;
+          height: 2rem;
+          font-size: 24px;
+          padding-left: 0.875rem;
+          line-height: 147.6%;
+          padding-top: 0.825rem;
+          padding-bottom: 0.5rem;
+        }
+
+        & .omrs-input-underlined>input:focus {
+          outline: none;
+          font-size: 24px;
+          height: 3rem;
+          font-weight: 700;
+        }
+
+        & .omrs-input-underlined>.omrs-input-label {
+          position: absolute;
+          top: 0.9375rem;
+          left: 0.875rem;
+          color: var(--omrs-color-ink-medium-contrast);
+          transition: top .2s;
+        }
+
+        & .omrs-input-underlined>input:hover {
+          background: var(--omrs-color-interaction-minus-two);
+          border-color: var(--omrs-color-ink-high-contrast);
+        }
+
+        & .omrs-input-underlined>input:focus+.omrs-input-label {
+          top: 0;
+          font-size: 0.9375rem;
+          margin-bottom: 32px;
+        }
+
+        & .omrs-input-underlined>input:valid+.omrs-input-label {
+          display: none;
+        }
+
+        & .omrs-input-underlined:not(.omrs-input-danger)>input:focus+.omrs-input-label {
+          color: var(--omrs-color-interaction);
+        }
+
+        & .omrs-input-underlined:not(.omrs-input-danger)>input:focus {
+          border-color: var(--theme-color);
+        }
+
+      }
+    }
+  }
+
+  /* fin mode edition */
 }
 </style>
