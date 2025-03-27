@@ -8,8 +8,9 @@
 
 :root {
     --body-font: sans-serif;
-    --theme-color: var(--blue-5);
+    --theme-color: var(--purple-5);
     --input-color: #9DBFAF;
+    --tag-color:var(--blue-10);
     font-family: EBGaramont, Helvetica, Arial, sans-serif;
     font-size: 16px;
     line-height: 24px;
@@ -50,7 +51,7 @@ body {
 
         &.mode-edition {
             position: fixed;
-            top: 0;
+            top: 10px;
             left: 0;
             width: 100%;
             margin: 0;

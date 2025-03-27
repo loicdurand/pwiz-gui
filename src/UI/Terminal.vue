@@ -1,4 +1,5 @@
 <script lang="ts">
+
 export default {
   name: 'Terminal',
   props: {
@@ -12,8 +13,11 @@ export default {
       required: true
     }
   },
-  methods:{
-    create_new_line(){
+  methods: {
+    set_line_value(index: number, event: InputEvent) {
+      this.lines[index] = (event.target as HTMLInputElement).value;
+    },
+    create_new_line() {
       this.lines.push('');
       this.$forceUpdate();
     }
@@ -43,11 +47,13 @@ export default {
       
       <span v-if="!mode.edition" class="yellow">{{ line }}</span>
       <input v-else
-          type="text"ch
+          type="text"
           name="line[]"
           class="yellow"
+          :placeholder="index === 0 && !line ? 'Contenu de la fiche...' : ''"
           :value="line"
           :key="index"
+          @input="set_line_value(index, $event)"
           @keyup.enter="create_new_line"
         >
 
@@ -70,6 +76,7 @@ export default {
   padding: .65rem 1rem 1rem 1rem;
   text-align: left;
   height: 100%;
+  overflow-y: scroll;
 
   .shebang {
     color: var(--grey-6);
@@ -92,18 +99,20 @@ export default {
   /* mode édition */
   &.editable {
     & [type="text"] {
-      background-color: rgba(255, 255, 255, .05);
-      border: 1px solid rgba(204, 204, 204, .1);
+      background-color: transparent;
       width: calc(100% - 4rem);
       font-size: 18px;
       outline: none;
+      border: none;
+      border-bottom: 1px solid rgba(204, 204, 204, 0.1);
     }
+
     & .shebang {
       & select {
         border: 1px solid var(--theme-color);
         color: var(--grey-7);
         text-align-last: center;
-        margin-bottom: 6px;
+        margin: 0 0 12px 0;
       }
     }
   }

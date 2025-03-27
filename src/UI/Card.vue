@@ -16,6 +16,56 @@ export default {
       type: Array<String>,
       required: false
     }
+  },
+  mounted() {
+    const input = document.querySelector(".chip-input");
+    const chips = document.querySelector(".chips");
+    
+    if (input === null)
+      return;
+
+    document.querySelector(".form-field")?.addEventListener('click', () => {
+      (input as HTMLInputElement).focus();
+    });
+
+    input.addEventListener('keydown', function (event: KeyboardEvent) {
+
+      if (event.key === 'Enter') {
+
+        chips.appendChild(function () {
+          const _chip = document.createElement('div');
+
+          _chip.classList.add('chip');
+          _chip.addEventListener('click', chipClickHandler);
+
+          _chip.append(
+            (function () {
+              const _chip_text = document.createElement('span');
+              _chip_text.classList.add('chip--text');
+              _chip_text.innerHTML = input.value;
+
+              return _chip_text;
+            })(),
+            (function () {
+              const _chip_button = document.createElement('span');
+              _chip_button.classList.add('chip--button');
+              _chip_button.innerHTML = '×';
+
+              return _chip_button;
+            })()
+          );
+
+          return _chip;
+        }());
+        (input as HTMLInputElement).value = '';
+      }
+    });
+
+    function chipClickHandler(event: MouseEvent) {
+      if (chips) {
+        chips.removeChild(event.currentTarget as Node);
+      }
+    }
   }
 }
 </script>
@@ -55,26 +105,29 @@ export default {
         v-if="!mode.edition"
         class="card-title"
       >{{ title }}</h2>
-      <div
+      <!--<div
         v-else
         class="card-title"
       >
-        <div class="omrs-input-group">
-          <label class="omrs-input-underlined">
+        <div class="input-group">
+          <label class="input-underlined">
             <input
               type="text"
               name="title"
               required
             >
             <span
-              class="omrs-input-label"
+              class="input-label"
               for="title"
             >Titre de la fiche</span>
 
           </label>
         </div>
-      </div>
-      <ul class="card-tags">
+      </div>-->
+      <ul
+        v-if="!mode.edition"
+        class="card-tags"
+      >
         <ul class="card-tags-list">
 
           <li
@@ -86,9 +139,24 @@ export default {
 
         </ul>
       </ul>
+      <div
+        v-else
+        class="form-field"
+      >
+        <div class="chips">
+        </div>
+        <input
+          placeholder="Tags permettant de trouver cette fiche: [ ENTRER ] pour valider"
+          autofocus
+          autocomplete="off"
+          class="chip-input"
+        />
+      </div>
+
     </div>
     <footer class="card-footer">
       <button
+        v-if="!mode.edition"
         class="icon-button more-button"
         type="button"
       >
@@ -97,12 +165,16 @@ export default {
           title="Afficher le menu"
         >more_horiz</i>
       </button>
+
+      <button type="button">
+        Valider
+      </button>
     </footer>
   </article>
 
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .app-card {
   height: 50vh;
   min-width: 100%;
@@ -199,77 +271,110 @@ export default {
       height: 62.5vh !important; //67px
     }
 
-    & .card-title {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-around;
-      line-height: 0 !important;
-      margin-top: 2rem;
+    & .card-content {
+      height: 23vh;
 
-      :root {
-        --omrs-color-ink-low-contrast: rgba(60, 60, 67, 0.3);
-        --omrs-color-ink-medium-contrast: rgba(19, 19, 21, 0.6);
-        --omrs-color-interaction: #1e4bd1;
-        --omrs-color-interaction-minus-two: rgba(73, 133, 224, 0.12);
-        --omrs-color-ink-high-contrast: #121212;
-      }
+      & .form-field {
+        height: 21vh;
+        min-height: 34px;
+        margin: 12px;
+        cursor: text;
+        border-radius: 3px;
+        border: 1px solid var(--grey-5);
+        padding: 6px;
 
-      & div.omrs-input-group {
-        margin-bottom: 5px;
-        position: relative;
-        width: 20.4375rem;
+        & .chips .chip {
+          width: auto;
+          overflow: hidden;
+          float: left;
+          background: var(--tag-color);
+          border-radius: 3px 0 0 3px;
+          color: #fff;
+          height: 40px;
+          line-height: 18px;
+          padding: 0 20px 0 23px;
+          position: relative;
+          margin: 0 10px 10px 0;
+          text-decoration: none;
+          -webkit-transition: color 0.2s;
 
-        /* Input*/
-        & .omrs-input-underlined>input:empty {
-          border: none;
-          border-bottom: 0.125rem solid var(--theme-color);
+          &::before {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: inset 0 1px rgba(0, 0, 0, 0.25);
+            content: "";
+            height: 6px;
+            left: 10px;
+            position: absolute;
+            width: 6px;
+            top: 17px;
+          }
+
+          &::after {
+            background: #fff;
+            border-bottom: 20px solid transparent;
+            border-top: 20px solid transparent;
+            content: "";
+            position: absolute;
+            right: 0;
+            top: 0;
+            border-left: 17px solid var(--tag-color);
+          }
+
+          & .chip--button {
+            padding: 10px;
+            cursor: pointer;
+            display: inline-block;
+          }
+
+          & .chip--text {
+            padding: 8px;
+            cursor: no;
+            display: inline-block;
+            pointer-events: none
+          }
+        }
+
+        &>input {
+          padding: 15px;
+          display: block;
+          box-sizing: border-box;
           width: 100%;
-          height: 2rem;
-          font-size: 24px;
-          padding-left: 0.875rem;
-          line-height: 147.6%;
-          padding-top: 0.825rem;
-          padding-bottom: 0.5rem;
-        }
-
-        & .omrs-input-underlined>input:focus {
+          height: 34px;
+          border: none;
+          margin: 5px 0 0;
+          display: inline-block;
+          background-color: transparent;
           outline: none;
-          font-size: 24px;
-          height: 3rem;
-          font-weight: 700;
+
+          &::placeholder {
+            font-weight: 700;
+            font-size: 18px;
+          }
         }
 
-        & .omrs-input-underlined>.omrs-input-label {
-          position: absolute;
-          top: 0.9375rem;
-          left: 0.875rem;
-          color: var(--omrs-color-ink-medium-contrast);
-          transition: top .2s;
-        }
+      }
+    }
 
-        & .omrs-input-underlined>input:hover {
-          background: var(--omrs-color-interaction-minus-two);
-          border-color: var(--omrs-color-ink-high-contrast);
-        }
+    & .card-footer {
+      button {
+        background: var(--theme-color);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        font-size: 18px;
+        cursor: pointer;
+        margin: 10px;
+        display: inline-block;
+        transition: background 0.3s;
+        position: absolute;
+        right: 0;
+        top: -4px;
 
-        & .omrs-input-underlined>input:focus+.omrs-input-label {
-          top: 0;
-          font-size: 0.9375rem;
-          margin-bottom: 32px;
+        &:hover {
+          box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.175);
         }
-
-        & .omrs-input-underlined>input:valid+.omrs-input-label {
-          display: none;
-        }
-
-        & .omrs-input-underlined:not(.omrs-input-danger)>input:focus+.omrs-input-label {
-          color: var(--omrs-color-interaction);
-        }
-
-        & .omrs-input-underlined:not(.omrs-input-danger)>input:focus {
-          border-color: var(--theme-color);
-        }
-
       }
     }
   }

@@ -8,7 +8,7 @@ import Terminal from "./UI/Terminal.vue";
 
 // const greetMsg = ref("");
 // const name = ref("");
-const mode = ref({ edition: true });
+const mode = ref({ edition: false });
 const posts = ref([]);
 
 async function get_posts() {
@@ -48,7 +48,7 @@ async function greet() {
 
           <Terminal
             shebang="sh"
-            :lines="['echo Hello, World!']"
+            :lines="Array(10).fill('')"
           />
 
         </Card>
