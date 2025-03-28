@@ -26,9 +26,13 @@ export default {
         class="app-card"
         :class="logo"
       >
-        <div class="card-logo">
-          {{ logo }}
+
+        <div class="img-logo">
+          <slot></slot>
         </div>
+        <!-- <div class="card-logo">
+          {{ logo }}
+        </div> -->
 
         <div class="card-content">
           <h2 class="card-title">{{ title }}</h2>
@@ -42,7 +46,7 @@ export default {
 
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .square-wrap {
   position: relative;
   width: 100%;
@@ -97,6 +101,20 @@ export default {
         position: absolute;
         width: 100%;
         padding-top: 15px;
+      }
+
+      & .img-logo img {
+        top: -1px;
+        height: 60%;
+        border-bottom: 1px solid var(--grey-5);
+        font-size: 5rem;
+        text-transform: uppercase;
+        font-weight: 700;
+        border-top-right-radius: 19px;
+        border-top-left-radius: 19px;
+        position: absolute;
+        width: 100%;
+        left: 0;
       }
 
       /* fin logo */

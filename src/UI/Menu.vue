@@ -29,7 +29,9 @@ export default {
   <div class="row app-list-of-articles mode-edition">
 
     <div class="col s6 m4 l3">
-      <SquareCard logo="sh" title="script shell"/>
+      <SquareCard logo="sh" title="script shell">
+        <img src="../assets/icons/shell.png">
+      </SquareCard>
     </div>
 
   </div>
