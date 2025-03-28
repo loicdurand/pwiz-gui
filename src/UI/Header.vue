@@ -3,8 +3,7 @@
 export default {
   name: 'Header',
   props: {
-    mode: Object,
-    posts: Array
+    mode: Object
   },
   methods: {
     create_post(e: Event) {

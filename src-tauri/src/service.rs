@@ -7,7 +7,7 @@ pub mod service {
     use crate::model::model::Post;
 
     pub fn establish_connection() -> Database {
-        let db_path = String::from("../../pwiz.db"); // chemin de la BDD
+        let db_path = String::from("./pwiz.db"); // chemin de la BDD
         let db = Database::open_path(&db_path).unwrap();
         db
     }

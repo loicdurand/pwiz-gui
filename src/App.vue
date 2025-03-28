@@ -5,20 +5,18 @@ import { invoke } from "@tauri-apps/api/core";
 import Card from "./UI/Card.vue";
 import Header from "./UI/Header.vue";
 import Terminal from "./UI/Terminal.vue";
+import Loader from "./UI/Loader.vue";
 
 // const greetMsg = ref("");
 // const name = ref("");
 const mode = ref({ edition: false });
 const posts = ref([]);
+const loading = ref(true);
 
 async function get_posts() {
-  posts = await invoke('get_posts');
+  posts.value = await invoke('get_posts');
 }
 
-async function greet() {
-  // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-  greetMsg.value = await invoke("greet", { name: name.value });
-}
 </script>
 
 <template>
@@ -35,25 +33,33 @@ async function greet() {
 
     <div class="row app-list-of-articles">
 
-      <div
-        v-for="post in posts"
-        class="col s6 m4 l3"
-      >
+      <template v-if="loading">
+        <Loader />
+      </template>
 
-        <Card
-          :key="post.id"
-          :title="post.title"
-          :tags="post.tags"
+      <template v-else>
+
+        <div
+          v-for="post in posts"
+          class="col s6 m4 l3"
         >
 
-          <Terminal
-            shebang="sh"
-            :lines="Array(10).fill('')"
-          />
+          <Card
+            :key="post.id"
+            :title="post.title"
+            :tags="post.tags"
+          >
 
-        </Card>
+            <Terminal
+              shebang="sh"
+              :lines="Array(10).fill('')"
+            />
 
-      </div>
+          </Card>
+
+        </div>
+
+      </template>
 
     </div>
 
@@ -67,7 +73,7 @@ async function greet() {
 
       <div class="col s12">
 
-        <Card :mode="mode" >
+        <Card :mode="mode">
 
           <Terminal
             :mode="mode"
