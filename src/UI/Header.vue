@@ -132,13 +132,20 @@ export default {
           }
         }
 
-        & .button-text {
-          position: absolute;
-          width: 150px;
-          height: 30px;
-          padding-top: .165rem;//5px
-          text-align: left;
+        &.icon-button {
+          background: none;
+          border: none;
+          cursor: pointer;
+
+          & .button-text {
+            position: absolute;
+            width: 150px;
+            height: 30px;
+            padding-top: 5px;
+            text-align: left;
+          }
         }
+
       }
     }
   }

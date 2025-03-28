@@ -6,22 +6,25 @@ import Card from "./UI/Card.vue";
 import Header from "./UI/Header.vue";
 import Terminal from "./UI/Terminal.vue";
 import Loader from "./UI/Loader.vue";
+import Menu from "./UI/Menu.vue";
 
-const mode = ref({ edition: false });
 interface Post {
   id: number;
   title: string;
   tags: string[];
 }
 
+const mode = ref({ edition: false });
 const posts = ref<Post[]>([]);
 const loading = ref(true);
 
-(async function get_posts() {
+async function get_posts() {
   loading.value = true;
   posts.value = await invoke('get_posts');
   loading.value = false;
-})();
+};
+
+get_posts();
 
 </script>
 
@@ -73,24 +76,11 @@ const loading = ref(true);
 
   <main
     v-else
-    class="container"
+    class="container mode-edition"
   >
-    <div class="row app-list-of-articles mode-edition">
 
-      <div class="col s12">
+    <Menu :mode="mode" />
 
-        <Card :mode="mode">
-
-          <Terminal
-            :mode="mode"
-            shebang="sh"
-            :lines="['']"
-          />
-
-        </Card>
-
-      </div>
-    </div>
   </main>
 
 </template>
