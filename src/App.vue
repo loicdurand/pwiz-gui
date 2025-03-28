@@ -7,15 +7,21 @@ import Header from "./UI/Header.vue";
 import Terminal from "./UI/Terminal.vue";
 import Loader from "./UI/Loader.vue";
 
-// const greetMsg = ref("");
-// const name = ref("");
 const mode = ref({ edition: false });
-const posts = ref([]);
+interface Post {
+  id: number;
+  title: string;
+  tags: string[];
+}
+
+const posts = ref<Post[]>([]);
 const loading = ref(true);
 
-async function get_posts() {
+(async function get_posts() {
+  loading.value = true;
   posts.value = await invoke('get_posts');
-}
+  loading.value = false;
+})();
 
 </script>
 
