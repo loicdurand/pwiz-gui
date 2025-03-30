@@ -1,5 +1,6 @@
 <script lang="ts">
 import SquareCard from './SquareCard.vue';
+import Editor from './Editor.vue';
 
 const menu_classes = 's4 m4 l4';
 
@@ -7,14 +8,26 @@ export default {
   name: "Menu",
   props: {
     mode: Object
+
   },
   components: {
-    SquareCard
+    SquareCard,
+    Editor,
   },
-  data(){
+  data() {
     return {
-       menu_classes
+      menu_classes,
+      editor: {
+        open: true,
+        type: "sh"
+      }
     };
+  },
+  methods: {
+    openEditor() {
+      this.editor.open = true;
+      this.editor.type = "sh";
+    }
   }
 }
 </script>
@@ -30,11 +43,17 @@ export default {
     <span>Retour</span>
   </button>
 
-  <p>
+  <p v-if="!editor.open">
     Quel type de contenu souhaitez-vous créer?
   </p>
+  <p v-else>
+    script.sh
+  </p>
 
-  <div class="row app-list-of-articles mode-edition">
+  <div
+    v-if="!editor.open"
+    class="row app-list-of-articles mode-edition"
+  >
 
     <div
       class="col"
@@ -43,8 +62,9 @@ export default {
       <SquareCard
         logo="sh"
         title="script"
+        @click="openEditor"
       >
-        <img src="../assets/icons/shell.avif">
+        <img src="../assets/icons/shell.png">
       </SquareCard>
     </div>
 
@@ -111,6 +131,21 @@ export default {
     <!-- suggestions: pdf, image, vidéo, etc... -->
 
   </div>
+
+  <!-- ÉDITEUR OUVERT -->
+  <div
+    v-else
+    class="row app-list-of-articles mode-edition"
+  >
+
+    <Editor content_type="shell">
+      
+      <textarea class="code-textarea"  placeholder="Tapez votre contenu ici" spellcheck="false"></textarea>
+
+    </Editor>
+
+  </div>
+
 </template>
 
 <style lang="scss" scoped>

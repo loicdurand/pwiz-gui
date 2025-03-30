@@ -27,29 +27,21 @@ pub mod service {
         resultats
     }
 
-    // pub fn insert_tuto(data: Data) -> i32 {
+    // pub fn insert_tuto(title: &str, content: &str, content_type: &str tags:&str) -> i32 {
     //     let db: Database = establish_connection();
     //     let posts: Collection<Post> = db.collection("posts");
 
-    //     let tags = data.tags.split(' ').collect::<Vec<&str>>();
+    //     let tags = tags.split(' ').collect::<Vec<&str>>();
     //     let mut content:Vec<String> = Vec::new();
     //     for line in data.content.lines() {
     //         content.push(line.trim().to_string());
     //     }
 
-    //     let recap = model::model::Recap {
-    //         author: username(),
-    //         title: data.title.clone(),
-    //         content_type: "commande".to_string(),
-    //         content,
-    //         tags: tags.iter().map(|s| s.to_string()).collect(),
-    //     };
-
     //     if let Ok(_) = posts.insert_one(doc! {
     //         "author": username(),
-    //         "title": data.title.clone(),
+    //         "title": title.clone(),
     //         "content": content,
-    //         "content_type": "commande".to_string(),
+    //         "content_type": content_type.clone(),
     //         "tags": tags.iter().map(|s| s.to_string()).collect(),
     //     }).unwrap();
     //     0
