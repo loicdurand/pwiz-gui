@@ -14,7 +14,7 @@ interface Post {
   tags: string[];
 }
 
-const mode = ref({ edition: false });
+const mode = ref({ edition: true });
 const posts = ref<Post[]>([]);
 const loading = ref(true);
 

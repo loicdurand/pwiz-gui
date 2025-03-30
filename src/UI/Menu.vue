@@ -1,12 +1,20 @@
 <script lang="ts">
 import SquareCard from './SquareCard.vue';
+
+const menu_classes = 's4 m4 l4';
+
 export default {
   name: "Menu",
   props: {
     mode: Object
   },
-  components:{
+  components: {
     SquareCard
+  },
+  data(){
+    return {
+       menu_classes
+    };
   }
 }
 </script>
@@ -28,9 +36,75 @@ export default {
 
   <div class="row app-list-of-articles mode-edition">
 
-    <div class="col s6 m4 l3">
-      <SquareCard logo="sh" title="script shell">
-        <img src="../assets/icons/shell.png">
+    <div
+      class="col"
+      :class="menu_classes"
+    >
+      <SquareCard
+        logo="sh"
+        title="script"
+      >
+        <img src="../assets/icons/shell.avif">
+      </SquareCard>
+    </div>
+
+    <div
+      class="col"
+      :class="menu_classes"
+    >
+      <SquareCard
+        logo="txt"
+        title="texte brut"
+      >
+        <img src="../assets/icons/text.png">
+      </SquareCard>
+    </div>
+
+    <div
+      class="col"
+      :class="menu_classes"
+    >
+      <SquareCard
+        logo="md"
+        title="markdown"
+      >
+        <img src="../assets/icons/markdown.png">
+      </SquareCard>
+    </div>
+
+    <div
+      class="col"
+      :class="menu_classes"
+    >
+      <SquareCard
+        logo="link"
+        title="lien"
+      >
+        <img src="../assets/icons/link.png">
+      </SquareCard>
+    </div>
+
+    <div
+      class="col"
+      :class="menu_classes"
+    >
+      <SquareCard
+        logo="dl"
+        title="téléchargement"
+      >
+        <img src="../assets/icons/download.png">
+      </SquareCard>
+    </div>
+
+    <div
+      class="col"
+      :class="menu_classes"
+    >
+      <SquareCard
+        logo="contact"
+        title="contact"
+      >
+        <img src="../assets/icons/contact.png">
       </SquareCard>
     </div>
 
@@ -38,6 +112,10 @@ export default {
 </template>
 
 <style lang="scss" scoped>
+.col {
+  margin-top: 1rem;
+}
+
 .button.back-button {
   background: transparent;
   border: 1px solid var(--grey-5);

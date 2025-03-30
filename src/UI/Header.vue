@@ -52,12 +52,12 @@ export default {
 
 <style lang="scss" scoped>
 .app-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 90px;
-  width: 100%;
-  border-bottom: 1px solid var(--grey-3);
+  position: absolute;
+    top: 0;
+    margin: 0 auto;
+    height: 90px;
+    width: 100%;
+    border-bottom: 1px solid var(--grey-3);
 
   // SEARCH
   & .app-search-wrap {

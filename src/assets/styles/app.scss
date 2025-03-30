@@ -31,6 +31,11 @@ body {
     font-family: var(--body-font);
 }
 
+main.container{
+    position: relative;
+    box-shadow: 0 19px 38px rgba(0,0,0,0.10), 0 15px 12px rgba(0,0,0,0.02);
+}
+
 .container {
     margin: 0;
     padding-top: 10vh;
@@ -38,6 +43,8 @@ body {
     flex-direction: column;
     justify-content: center;
     text-align: center;
+    width: 100%;
+    margin: auto;
 
     &.mode-edition{
         padding-top: 14px;
@@ -46,6 +53,7 @@ body {
     // LIST OF ARTICLES
     & .app-list-of-articles {
         margin-top: 35px;
+        height: calc(100vh - 100px);
     }
 
     // fin LIST OF ARTICLES

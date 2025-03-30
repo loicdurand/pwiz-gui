@@ -28,11 +28,12 @@ export default {
       >
 
         <div class="img-logo">
-          <slot></slot>
+          <slot>
+            <div class="card-logo">
+              {{ logo }}
+            </div>
+          </slot>
         </div>
-        <!-- <div class="card-logo">
-          {{ logo }}
-        </div> -->
 
         <div class="card-content">
           <h2 class="card-title">{{ title }}</h2>
@@ -50,6 +51,9 @@ export default {
 .square-wrap {
   position: relative;
   width: 100%;
+  &:hover{
+    box-shadow: 0 19px 38px rgba(0,0,0,0.10), 0 15px 12px rgba(0,0,0,0.02);
+  }
 
   &:after {
     content: "";
@@ -77,16 +81,28 @@ export default {
       z-index: 9999;
       width: 100%;
       height: 100%;
+      color: #fff;
 
       &.sh {
-        background-color: var(--blue-10);
-        color: #fff;
-
-        & .card-logo {
-          background: var(--yellow-6);
-          color: var(--grey-10);
-        }
+        background-color: var(--indigo-10);
       }
+      &.txt {
+        background-color: var(--yellow-8);
+      }
+      &.md {
+        background-color: var(--blue-4);
+      }
+      &.link {
+        background-color: var(--grey-10);
+      }
+      &.dl {
+        background-color: var(--green-5);
+      }
+      &.contact {
+        background-color: var(--teal-4);
+      }
+
+
 
       /* logo */
       & .card-logo {
@@ -115,6 +131,8 @@ export default {
         position: absolute;
         width: 100%;
         left: 0;
+        object-fit: cover;
+        background-color: #fff;
       }
 
       /* fin logo */
