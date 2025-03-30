@@ -93,7 +93,7 @@ export default {
         background-color: var(--blue-4);
       }
       &.link {
-        background-color: var(--grey-10);
+        background-color: var(--red-4);
       }
       &.dl {
         background-color: var(--green-5);

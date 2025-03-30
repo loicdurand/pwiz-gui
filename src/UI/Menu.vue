@@ -108,6 +108,8 @@ export default {
       </SquareCard>
     </div>
 
+    <!-- suggestions: pdf, image, vidéo, etc... -->
+
   </div>
 </template>
 

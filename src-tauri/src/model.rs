@@ -13,11 +13,4 @@ pub mod model {
         pub tags: Vec<String>,
     }
 
-    #[derive(Debug, Serialize, Deserialize)]
-    pub struct Data {
-        pub title: String,
-        pub content: String,
-        pub content_type: String,
-        pub tags: Vec<String>,
-    }
 }
