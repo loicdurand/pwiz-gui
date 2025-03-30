@@ -65,6 +65,8 @@ export default {
 
       <div class="card-window">
 
+        <div class="shebang">#!/bin/bash</div>
+
         <slot></slot>
 
       </div>
@@ -117,6 +119,16 @@ export default {
     & .card-window {
       height: 100%;
       align-items: center;
+
+      & .shebang {
+        position: absolute;
+        color: var(--grey-6);
+        font-size: 18px;
+        line-height: 24px;
+        top: 4px;
+        left: 12px;
+        font-style: italic;
+      }
 
       & .code-textarea {
         border: 1px solid rgb(13, 221, 240);
