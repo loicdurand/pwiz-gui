@@ -60,7 +60,7 @@ get_posts();
           <Card
             :title="post.title"
             :tags="post.tags"
-            :content="post.content"
+            :content='post.content.join("\r\n")'
           >
 
             <Terminal

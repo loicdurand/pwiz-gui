@@ -12,6 +12,7 @@ export default {
       // recuil des valeurs de base
       const title: HTMLElement | null = document.getElementById('post-title');
       const content: HTMLElement | null = document.getElementById('post-content');
+      const contenttype: HTMLElement | null = document.getElementById('post-contenttype');
 
       // recueil des tags
       const chips = document.querySelectorAll(".chip--text");
@@ -19,7 +20,7 @@ export default {
       await invoke('insert_post', {
         title: title?.innerHTML,
         content: (content as HTMLTextAreaElement)?.value.trim(),
-        contenttype: "sh",
+        contenttype: contenttype?.innerHTML||"sh",
         tags: tags.join(' ')
       });
       location.reload();
@@ -86,7 +87,7 @@ export default {
 
       <div class="card-window">
 
-        <div class="shebang">#!/bin/sh</div>
+        <div class="shebang" id="post-contenttype" contenteditable="true">#!/bin/sh</div>
 
         <slot></slot>
 
@@ -161,7 +162,7 @@ export default {
         padding: 30px 10px 0 10px;
         resize: none;
         overflow-y: scroll;
-        color: #ffff00;
+        color: var(--codeline-color);
         font-size: 18px;
         background: repeating-linear-gradient(rgb(18, 18, 18) 0, rgb(18, 18, 18) 29px, var(--grey-8) 30px, black 30px);
         line-height: 30px;

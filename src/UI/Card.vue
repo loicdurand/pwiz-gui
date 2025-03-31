@@ -170,7 +170,7 @@ export default {
       font-weight: 700;
       padding: 6px 0 0 0;
       margin: 0;
-      line-height: 2.2vh;
+      font-size: 1.1rem;
     }
 
     & .card-tags {
