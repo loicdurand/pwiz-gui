@@ -50,11 +50,14 @@ export default {
   <p v-if="!editor.open">
     Quel type de contenu souhaitez-vous créer?
   </p>
-  <p
-    v-else
+  <p v-else>
+  <div
     id="post-title"
+    class="post-title"
+    contenteditable="true"
   >
     script.sh
+  </div>
   </p>
 
   <div
@@ -179,5 +182,11 @@ export default {
     font-size: 14px;
     margin-right: 6px;
   }
+}
+
+.post-title {
+  width: 100px;
+  margin: 0 auto;
+  border: 1px dotted var(--grey-4);
 }
 </style>
