@@ -28,25 +28,33 @@ export default {
     Tag
   },
   props: {
+    id: {
+      type: String,
+      required: true
+    },
     title: {
       type: String,
-      required: false
+      required: true
     },
     content: {
       type: String,
-      required: false
+      required: true
     },
     tags: {
       type: Array<String>,
-      required: false
+      required: true
     }
   },
   methods: {
-    copy_to_clipboard(e: Event) {
+    copy_to_clipboard(e: Event): void {
       const target = e.currentTarget as HTMLElement;
       const content = target?.dataset.content || '';
       navigator.clipboard.writeText(content);
       fadeOut(target);
+    },
+    show_menu(e: Event): void {
+      const target = e.currentTarget as HTMLElement;
+      const menu_id = target?.dataset.id;
     }
   }
 }
@@ -108,10 +116,15 @@ export default {
         <i
           class="material-icons"
           title="Afficher le menu"
+          :data-id="id"
+          @click="show_menu"
         >more_horiz</i>
       </span>
 
     </footer>
+
+    <nav :id="'nav-'+id" class="card-menu"></nav>
+
   </article>
 
 </template>
@@ -203,6 +216,12 @@ export default {
       width: 4vh;
       right: 1rem;
     }
+  }
+
+  & .card-menu{
+    width:10px;
+    height: 10px;
+    background-color: red;
   }
 
   /* fin footer */

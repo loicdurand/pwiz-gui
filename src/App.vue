@@ -9,6 +9,7 @@ import Loader from "./UI/Loader.vue";
 import Menu from "./UI/Menu.vue";
 
 interface Post {
+  id: string,
   author: string,
   title: string,
   content: string[],
@@ -58,6 +59,7 @@ get_posts();
         >
 
           <Card
+            :id="post.id"
             :title="post.title"
             :tags="post.tags"
             :content='post.content.join("\r\n")'
