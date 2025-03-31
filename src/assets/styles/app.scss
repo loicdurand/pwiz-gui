@@ -58,7 +58,7 @@ main.container {
     // LIST OF ARTICLES
     & .app-list-of-articles {
         margin-top: 35px;
-        height: 100vh;
+        min-height: 100vh;
     }
 
     // fin LIST OF ARTICLES
