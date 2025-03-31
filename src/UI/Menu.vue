@@ -18,8 +18,8 @@ export default {
     return {
       menu_classes,
       editor: {
-        open: true,
-        type: "sh"
+        open: false,
+        type: ""
       }
     };
   },
@@ -27,6 +27,10 @@ export default {
     openEditor() {
       this.editor.open = true;
       this.editor.type = "sh";
+    },
+    closeEditor() {
+      this.editor.open = false;
+      this.editor.type = "";
     }
   }
 }
@@ -37,7 +41,7 @@ export default {
   <button
     type="button"
     class="button back-button"
-    @click="this.mode.edition = false"
+    @click="editor.open ? closeEditor() : this.mode.edition = false"
   >
     <i class="material-icons">arrow_back</i>
     <span>Retour</span>
@@ -46,7 +50,10 @@ export default {
   <p v-if="!editor.open">
     Quel type de contenu souhaitez-vous créer?
   </p>
-  <p v-else id="post-title">
+  <p
+    v-else
+    id="post-title"
+  >
     script.sh
   </p>
 
@@ -139,8 +146,13 @@ export default {
   >
 
     <Editor content_type="shell">
-      
-      <textarea class="code-textarea" id="post-content"  placeholder="Tapez votre contenu ici" spellcheck="false"></textarea>
+
+      <textarea
+        class="code-textarea"
+        id="post-content"
+        placeholder="Tapez votre contenu ici"
+        spellcheck="false"
+      ></textarea>
 
     </Editor>
 

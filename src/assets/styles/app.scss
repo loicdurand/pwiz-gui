@@ -10,7 +10,8 @@
     --body-font: sans-serif;
     --theme-color: var(--purple-5);
     --input-color: #9DBFAF;
-    --tag-color: var(--blue-10);
+    --tag-color: var(--theme-color);
+    --valid-color: var(--blue-10);
     font-family: EBGaramont, Helvetica, Arial, sans-serif;
     font-size: 16px;
     line-height: 24px;
@@ -31,9 +32,9 @@ body {
     font-family: var(--body-font);
 }
 
-main.container{
+main.container {
     position: relative;
-    box-shadow: 0 19px 38px rgba(0,0,0,0.10), 0 15px 12px rgba(0,0,0,0.02);
+    box-shadow: 0 19px 38px rgba(0, 0, 0, 0.10), 0 15px 12px rgba(0, 0, 0, 0.02);
 }
 
 .container {
@@ -46,7 +47,11 @@ main.container{
     width: 100%;
     margin: auto;
 
-    &.mode-edition{
+    .pointer {
+        cursor: pointer;
+    }
+
+    &.mode-edition {
         padding-top: 14px;
     }
 

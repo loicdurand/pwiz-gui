@@ -10,12 +10,12 @@ export default {
   methods: {
     async insert_post() {
       // recuil des valeurs de base
-      const title:HTMLElement|null = document.getElementById('post-title');
-      const content:HTMLElement|null = document.getElementById('post-content');
+      const title: HTMLElement | null = document.getElementById('post-title');
+      const content: HTMLElement | null = document.getElementById('post-content');
 
       // recueil des tags
-      const chips:HTMLElement|null = document.querySelector(".chip--text");
-      const tags = chips ? Array.from(chips.querySelectorAll(".chip--text")).map(chip => chip.innerHTML) : [];
+      const chips = document.querySelectorAll(".chip--text");
+      const tags = chips ? [...chips].map(chip => chip.innerHTML) : [];
       await invoke('insert_post', {
         title: title?.innerHTML,
         content: (content as HTMLTextAreaElement)?.value.trim(),
@@ -27,8 +27,8 @@ export default {
     }
   },
   mounted() {
-    const input:HTMLInputElement|null = document.querySelector(".chip-input");
-    const chips:HTMLElement|null = document.querySelector(".chips");
+    const input: HTMLInputElement | null = document.querySelector(".chip-input");
+    const chips: HTMLElement | null = document.querySelector(".chips");
 
     if (input === null)
       return;
@@ -161,7 +161,7 @@ export default {
         padding: 30px 10px 0 10px;
         resize: none;
         overflow-y: scroll;
-        color: white;
+        color: #ffff00;
         font-size: 18px;
         background: repeating-linear-gradient(rgb(18, 18, 18) 0, rgb(18, 18, 18) 29px, var(--grey-8) 30px, black 30px);
         line-height: 30px;
@@ -331,7 +331,7 @@ export default {
 
     & .card-footer {
       button {
-        background: var(--theme-color);
+        background: var(--valid-color);
         color: white;
         border: none;
         border-radius: 5px;

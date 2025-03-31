@@ -11,10 +11,8 @@ fn get_posts() -> Vec<Post> {
 }
 
 #[tauri::command]
-fn insert_post(title: &str, contenttype: &str, content: &str, tags:&str) -> String {
-    Service::insert_post(title, contenttype, content, tags);
-
-    String::from("ok")
+fn insert_post(title: &str, contenttype: &str, content: &str, tags:&str) -> i32 {
+    Service::insert_post(title, contenttype, content, tags)
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]

@@ -1,7 +1,12 @@
 <script lang="ts">
 
+import Tag from './Tag.vue';
+
 export default {
   name: 'Card',
+  components: {
+    Tag
+  },
   props: {
     title: {
       type: String,
@@ -21,7 +26,7 @@ export default {
       <span
         role="button"
         tabindex="0"
-        class="icon-button copy-button"
+        class="icon-button copy-button pointer"
       >
         <i
           class="material-icons"
@@ -38,14 +43,19 @@ export default {
     <div class="card-content">
       <h2 class="card-title">{{ title }}</h2>
 
-      <ul class="card-tags">
+      <ul
+        v-if="tags?.length"
+        class="card-tags"
+      >
         <ul class="card-tags-list">
 
           <li
             v-for="tag in tags"
             class="tag"
           >
-            {{ tag }}
+
+            <Tag v-if="tag">{{ tag }}</Tag>
+
           </li>
 
         </ul>
@@ -56,7 +66,7 @@ export default {
       <span
         role="button"
         tabindex="0"
-        class="icon-button more-button"
+        class="icon-button more-button pointer"
       >
         <i
           class="material-icons"
@@ -122,6 +132,7 @@ export default {
     & .card-tags {
       height: 10.8vh;
       padding: 0;
+      overflow-x: scroll;
 
       & .card-tags-list {
         margin-left: 0;
@@ -129,13 +140,7 @@ export default {
 
         li.tag {
           display: inline-block;
-          padding: 0 5px;
-          margin: 0 5px;
-          background: var(--theme-color);
-          color: white;
-          border-radius: 5px;
-          font-size: 12px;
-          line-height: 20px;
+          height: 25px;
         }
       }
     }
