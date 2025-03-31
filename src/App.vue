@@ -9,18 +9,22 @@ import Loader from "./UI/Loader.vue";
 import Menu from "./UI/Menu.vue";
 
 interface Post {
-  id: number;
-  title: string;
+  author: string,
+  title: string,
+  content: string[],
+  content_type: string,
   tags: string[];
 }
 
-const mode = ref({ edition: true });
-const posts = ref<Post[]>([]);
+const mode = ref({ edition: false });
+let posts = ref<Post[]>([]);
 const loading = ref(true);
 
 async function get_posts() {
   loading.value = true;
-  posts.value = await invoke('get_posts');
+  let results: Post[] = await invoke('get_posts');
+  for (let result of results)
+    posts.value.push(result);
   loading.value = false;
 };
 
@@ -54,14 +58,13 @@ get_posts();
         >
 
           <Card
-            :key="post.id"
             :title="post.title"
             :tags="post.tags"
           >
 
             <Terminal
-              shebang="sh"
-              :lines="Array(10).fill('')"
+              :shebang="post.content_type"
+              :lines="post.content"
             />
 
           </Card>

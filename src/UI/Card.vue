@@ -3,11 +3,6 @@
 export default {
   name: 'Card',
   props: {
-    mode: Object,
-    id: {
-      type: Number,
-      required: false
-    },
     title: {
       type: String,
       required: false
@@ -16,84 +11,24 @@ export default {
       type: Array<String>,
       required: false
     }
-  },
-  mounted() {
-    const input = document.querySelector(".chip-input");
-    const chips = document.querySelector(".chips");
-    
-    if (input === null)
-      return;
-
-    document.querySelector(".form-field")?.addEventListener('click', () => {
-      (input as HTMLInputElement).focus();
-    });
-
-    input.addEventListener('keydown', function (event: KeyboardEvent) {
-
-      if (event.key === 'Enter') {
-
-        chips.appendChild(function () {
-          const _chip = document.createElement('div');
-
-          _chip.classList.add('chip');
-          _chip.addEventListener('click', chipClickHandler);
-
-          _chip.append(
-            (function () {
-              const _chip_text = document.createElement('span');
-              _chip_text.classList.add('chip--text');
-              _chip_text.innerHTML = input.value;
-
-              return _chip_text;
-            })(),
-            (function () {
-              const _chip_button = document.createElement('span');
-              _chip_button.classList.add('chip--button');
-              _chip_button.innerHTML = '×';
-
-              return _chip_button;
-            })()
-          );
-
-          return _chip;
-        }());
-        (input as HTMLInputElement).value = '';
-      }
-    });
-
-    function chipClickHandler(event: MouseEvent) {
-      if (chips) {
-        chips.removeChild(event.currentTarget as Node);
-      }
-    }
   }
 }
 </script>
 
 <template>
-  <article
-    class="app-card"
-    :class="{ editable: mode.edition }"
-  >
+  <article class="app-card">
     <div class="card-preview">
-      <button
+      <span
+        role="button"
+        tabindex="0"
         class="icon-button copy-button"
-        type="button"
       >
         <i
-          v-if="!mode.edition"
           class="material-icons"
           title="Copier"
         >content_copy</i>
 
-        <i
-          v-else
-          class="material-icons"
-          title="Fermer"
-          @click="mode.edition = false"
-        >close</i>
-
-      </button>
+      </span>
       <div class="card-window">
 
         <slot></slot>
@@ -101,33 +36,9 @@ export default {
       </div>
     </div>
     <div class="card-content">
-      <h2
-        v-if="!mode.edition"
-        class="card-title"
-      >{{ title }}</h2>
-      <!--<div
-        v-else
-        class="card-title"
-      >
-        <div class="input-group">
-          <label class="input-underlined">
-            <input
-              type="text"
-              name="title"
-              required
-            >
-            <span
-              class="input-label"
-              for="title"
-            >Titre de la fiche</span>
+      <h2 class="card-title">{{ title }}</h2>
 
-          </label>
-        </div>
-      </div>-->
-      <ul
-        v-if="!mode.edition"
-        class="card-tags"
-      >
+      <ul class="card-tags">
         <ul class="card-tags-list">
 
           <li
@@ -139,36 +50,20 @@ export default {
 
         </ul>
       </ul>
-      <div
-        v-else
-        class="form-field"
-      >
-        <div class="chips">
-        </div>
-        <input
-          placeholder="Tags permettant de trouver cette fiche: [ ENTRER ] pour valider"
-          autofocus
-          autocomplete="off"
-          class="chip-input"
-        />
-      </div>
 
     </div>
     <footer class="card-footer">
-      <button
-        v-if="!mode.edition"
+      <span
+        role="button"
+        tabindex="0"
         class="icon-button more-button"
-        type="button"
       >
         <i
           class="material-icons"
           title="Afficher le menu"
         >more_horiz</i>
-      </button>
+      </span>
 
-      <button type="button">
-        Valider
-      </button>
     </footer>
   </article>
 
@@ -263,122 +158,5 @@ export default {
 
   /* fin footer */
 
-  /* mode edition */
-  &.editable {
-    height: calc(100vh - 2rem) !important;
-
-    & .card-preview {
-      height: 62.5vh !important; //67px
-    }
-
-    & .card-content {
-      height: 23vh;
-
-      & .form-field {
-        height: 21vh;
-        min-height: 34px;
-        margin: 12px;
-        cursor: text;
-        border-radius: 3px;
-        border: 1px solid var(--grey-5);
-        padding: 6px;
-
-        & .chips .chip {
-          width: auto;
-          overflow: hidden;
-          float: left;
-          background: var(--tag-color);
-          border-radius: 3px 0 0 3px;
-          color: #fff;
-          height: 40px;
-          line-height: 18px;
-          padding: 0 20px 0 23px;
-          position: relative;
-          margin: 0 10px 10px 0;
-          text-decoration: none;
-          -webkit-transition: color 0.2s;
-
-          &::before {
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: inset 0 1px rgba(0, 0, 0, 0.25);
-            content: "";
-            height: 6px;
-            left: 10px;
-            position: absolute;
-            width: 6px;
-            top: 17px;
-          }
-
-          &::after {
-            background: #fff;
-            border-bottom: 20px solid transparent;
-            border-top: 20px solid transparent;
-            content: "";
-            position: absolute;
-            right: 0;
-            top: 0;
-            border-left: 17px solid var(--tag-color);
-          }
-
-          & .chip--button {
-            padding: 10px;
-            cursor: pointer;
-            display: inline-block;
-          }
-
-          & .chip--text {
-            padding: 8px;
-            cursor: no;
-            display: inline-block;
-            pointer-events: none
-          }
-        }
-
-        &>input {
-          padding: 15px;
-          display: block;
-          box-sizing: border-box;
-          width: 100%;
-          height: 34px;
-          border: none;
-          margin: 5px 0 0;
-          display: inline-block;
-          background-color: transparent;
-          outline: none;
-
-          &::placeholder {
-            font-weight: 700;
-            font-size: 18px;
-          }
-        }
-
-      }
-    }
-
-    & .card-footer {
-      button {
-        background: var(--theme-color);
-        color: white;
-        border: none;
-        border-radius: 5px;
-        padding: 10px 20px;
-        font-size: 18px;
-        cursor: pointer;
-        margin: 10px;
-        display: inline-block;
-        transition: background 0.3s;
-        position: absolute;
-        right: 0;
-        top: -4px;
-
-        &:hover {
-          box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.175);
-        }
-      }
-    }
-  }
-
-  /* fin mode edition */
 }
 </style>

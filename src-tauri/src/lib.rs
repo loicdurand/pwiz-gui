@@ -11,11 +11,8 @@ fn get_posts() -> Vec<Post> {
 }
 
 #[tauri::command]
-fn insert_post(title: &str, content_type: &str, content: &str, tags:&str) -> String {
-    println!("title: {}",title);
-    println!("content: {}",content);
-    println!("content_type: {}",content_type);
-    println!("tags: {}",tags);
+fn insert_post(title: &str, contenttype: &str, content: &str, tags:&str) -> String {
+    Service::insert_post(title, contenttype, content, tags);
 
     String::from("ok")
 }

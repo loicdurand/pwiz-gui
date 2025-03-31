@@ -29,34 +29,18 @@ export default {
 
   <code
     class="terminal"
-    :class="{ editable: mode.edition }"
   >
 
-    <span class="shebang" v-if="mode.edition">
-      <select name="content_types" id="content_type-select">
-        <option value="sh">Lignes de commandes (Shell)</option>
-      </select>
-    </span>
-    <span class="shebang" v-else-if="shebang === 'sh'">#!/bin/sh</span>
+    <span class="shebang" v-if="shebang === 'sh'">#!/bin/sh</span>
     <span class="shebang" v-else>#!/bin/bash</span>
 
 
     <br>
-    <span v-for="(line, index) in lines">
+    <span v-for="line in lines">
       <span class="green">~&nbsp;</span><span class="blue">❯&nbsp;</span>
       
-      <span v-if="!mode.edition" class="yellow">{{ line }}</span>
-      <input v-else
-          type="text"
-          name="line[]"
-          class="yellow"
-          :placeholder="index === 0 && !line ? 'Contenu de la fiche...' : ''"
-          :value="line"
-          :key="index"
-          @input="set_line_value(index, $event)"
-          @keyup.enter="create_new_line"
-        >
-
+      <span class="yellow">{{ line }}</span>
+      
       <br>
     </span>
   </code>

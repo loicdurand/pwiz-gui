@@ -1,6 +1,5 @@
 pub mod service {
-
-    use polodb_core::{bson::doc, Collection, CollectionT, Database};
+    use polodb_core::{ bson::doc, Collection, CollectionT, Database };
     // use whoami::username;
     //   use std::process;
 
@@ -27,23 +26,11 @@ pub mod service {
         resultats
     }
 
-    // pub fn insert_tuto(title: &str, content: &str, content_type: &str tags:&str) -> i32 {
-    //     let db: Database = establish_connection();
-    //     let posts: Collection<Post> = db.collection("posts");
+    pub fn insert_post(title: &str, content_type: &str, content: &str, tags: &str) -> i32 {
+        let db: Database = establish_connection();
+        let posts: Collection<Post> = db.collection("posts");
 
-    //     let tags = tags.split(' ').collect::<Vec<&str>>();
-    //     let mut content:Vec<String> = Vec::new();
-    //     for line in data.content.lines() {
-    //         content.push(line.trim().to_string());
-    //     }
-
-    //     if let Ok(_) = posts.insert_one(doc! {
-    //         "author": username(),
-    //         "title": title.clone(),
-    //         "content": content,
-    //         "content_type": content_type.clone(),
-    //         "tags": tags.iter().map(|s| s.to_string()).collect(),
-    //     }).unwrap();
-    //     0
-    // }
+        posts.insert_one(Post::default(title, content_type, content, tags)).unwrap();
+        1
+    }
 }

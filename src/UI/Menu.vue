@@ -46,7 +46,7 @@ export default {
   <p v-if="!editor.open">
     Quel type de contenu souhaitez-vous créer?
   </p>
-  <p v-else>
+  <p v-else id="post-title">
     script.sh
   </p>
 
@@ -140,7 +140,7 @@ export default {
 
     <Editor content_type="shell">
       
-      <textarea class="code-textarea"  placeholder="Tapez votre contenu ici" spellcheck="false"></textarea>
+      <textarea class="code-textarea" id="post-content"  placeholder="Tapez votre contenu ici" spellcheck="false"></textarea>
 
     </Editor>
 

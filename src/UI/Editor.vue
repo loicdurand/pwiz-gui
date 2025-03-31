@@ -1,26 +1,47 @@
 <script lang="ts">
+import { invoke } from "@tauri-apps/api/core";
+
 
 export default {
   name: 'Editor',
   props: {
     content_type: String
   },
+  methods: {
+    async insert_post() {
+      // recuil des valeurs de base
+      const title:HTMLElement|null = document.getElementById('post-title');
+      const content:HTMLElement|null = document.getElementById('post-content');
+
+      // recueil des tags
+      const chips:HTMLElement|null = document.querySelector(".chip--text");
+      const tags = chips ? Array.from(chips.querySelectorAll(".chip--text")).map(chip => chip.innerHTML) : [];
+      await invoke('insert_post', {
+        title: title?.innerHTML,
+        content: (content as HTMLTextAreaElement)?.value.trim(),
+        contenttype: "sh",
+        tags: tags.join(' ')
+      });
+      location.reload();
+
+    }
+  },
   mounted() {
-    const input = document.querySelector(".chip-input");
-    const chips = document.querySelector(".chips");
+    const input:HTMLInputElement|null = document.querySelector(".chip-input");
+    const chips:HTMLElement|null = document.querySelector(".chips");
 
     if (input === null)
       return;
 
     document.querySelector(".form-field")?.addEventListener('click', () => {
-      (input as HTMLInputElement).focus();
+      input.focus();
     });
 
     input.addEventListener('keydown', function (event: KeyboardEvent) {
 
       if (event.key === 'Enter') {
 
-        chips.appendChild(function () {
+        chips?.appendChild(function () {
           const _chip = document.createElement('div');
 
           _chip.classList.add('chip');
@@ -45,7 +66,7 @@ export default {
 
           return _chip;
         }());
-        (input as HTMLInputElement).value = '';
+        input.value = '';
       }
     });
 
@@ -65,7 +86,7 @@ export default {
 
       <div class="card-window">
 
-        <div class="shebang">#!/bin/bash</div>
+        <div class="shebang">#!/bin/sh</div>
 
         <slot></slot>
 
@@ -89,7 +110,10 @@ export default {
 
     </div>
     <footer class="card-footer">
-      <button type="button">
+      <button
+        type="button"
+        @click="insert_post"
+      >
         Valider
       </button>
     </footer>
