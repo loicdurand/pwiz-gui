@@ -7,8 +7,10 @@ const menu_classes = 's4 m4 l4';
 export default {
   name: "Menu",
   props: {
-    mode: Object
-
+    mode: {
+      type: Object,
+      required: true
+    }
   },
   components: {
     SquareCard,
@@ -41,7 +43,7 @@ export default {
   <button
     type="button"
     class="button back-button"
-    @click="editor.open ? closeEditor() : this.mode.edition = false"
+    @click="editor.open ? closeEditor() : mode.edition = false"
   >
     <i class="material-icons">arrow_back</i>
     <span>Retour</span>
@@ -51,13 +53,13 @@ export default {
     Quel type de contenu souhaitez-vous créer?
   </p>
   <p v-else>
-  <div
+  <span
     id="post-title"
     class="post-title"
     contenteditable="true"
   >
     script.sh
-  </div>
+  </span>
   </p>
 
   <div
