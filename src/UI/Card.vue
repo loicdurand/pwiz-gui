@@ -2,6 +2,26 @@
 
 import Tag from './Tag.vue';
 
+function fadeOut(target: HTMLElement) {
+  const fadeTarget = target.querySelector('.copied') as HTMLElement | null;
+  if (!fadeTarget)
+    return;
+
+  fadeTarget.style.display = "inline";
+  const fadeEffect = setInterval(function () {
+    if (fadeTarget && !fadeTarget.style.opacity) {
+      fadeTarget.style.opacity = '1';
+    }
+    if (fadeTarget && parseFloat(fadeTarget.style.opacity) > 0) {
+      fadeTarget.style.opacity = (parseFloat(fadeTarget.style.opacity) - 0.1).toString();
+    } else if (fadeTarget) {
+      clearInterval(fadeEffect);
+      fadeTarget.style.display = "none";
+      fadeTarget.style.opacity = '1';
+    }
+  }, 100);
+}
+
 export default {
   name: 'Card',
   components: {
@@ -12,9 +32,21 @@ export default {
       type: String,
       required: false
     },
+    content: {
+      type: String,
+      required: false
+    },
     tags: {
       type: Array<String>,
       required: false
+    }
+  },
+  methods: {
+    copy_to_clipboard(e: Event) {
+      const target = e.currentTarget as HTMLElement;
+      const content = target?.dataset.content || '';
+      navigator.clipboard.writeText(content);
+      fadeOut(target);
     }
   }
 }
@@ -27,7 +59,12 @@ export default {
         role="button"
         tabindex="0"
         class="icon-button copy-button pointer"
+        :data-content="content"
+        @click="copy_to_clipboard"
       >
+
+        <span class="copied">Copié!</span>
+
         <i
           class="material-icons"
           title="Copier"
@@ -105,6 +142,13 @@ export default {
       top: .5rem;
       right: .5rem;
       color: var(--grey-4);
+
+      & .copied {
+        display: none;
+        position: absolute;
+        right: 30px;
+        top: -3px;
+      }
     }
 
     & .card-window {
