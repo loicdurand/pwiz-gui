@@ -1,18 +1,18 @@
 <script lang="ts">
 
-import {Post} from '../interfaces';
+import { Post } from '../interfaces';
 import { invoke } from "@tauri-apps/api/core";
 
 export default {
   name: 'Editor',
   props: {
     post: {
-      type:{} as Post|null,
-      required:true
+      type: {} as Post | null,
+      required: true
     }
   },
   methods: {
-    async submit(){
+    async submit() {
       // recuil des valeurs de base
       const id: HTMLElement | null = document.getElementById('post-id');
       const title: HTMLElement | null = document.getElementById('post-title');
@@ -23,18 +23,18 @@ export default {
       const chips = document.querySelectorAll(".chip--text");
       const tags = chips ? [...chips].map(chip => chip.innerHTML) : [];
       const post = {
-        id:(id as HTMLInputElement)?.value,
-         title: title?.innerHTML,
-         content: (content as HTMLTextAreaElement)?.value.trim(),
-         contenttype: contenttype?.innerHTML||"sh",
-         tags: tags.join(' ')
-       };
+        id: (id as HTMLInputElement)?.value,
+        title: title?.innerHTML,
+        content: (content as HTMLTextAreaElement)?.value.trim(),
+        contenttype: contenttype?.innerHTML || "sh",
+        tags: tags.join(' ')
+      };
 
-       if(!post.id)
-      await invoke('insert_post', post);
-    else
-    console.log('update needed');
-       location.reload();
+      if (!post.id)
+        await invoke('insert_post', post);
+      else
+        await invoke('update_post', post);
+      location.reload();
     }
 
   },
@@ -93,14 +93,23 @@ export default {
 
 <template>
 
-  <input type="hidden" id="post-id" :value="post===null?'':post.id">
+  <input
+    type="hidden"
+    id="post-id"
+    :value="post === null ? '' : post.id"
+  >
 
   <article class="app-editor editable">
     <div class="card-preview">
 
       <div class="card-window">
 
-        <div class="shebang" id="post-contenttype" contenteditable="true" v-html="post===null?'#!/bin/sh':post.content_type"/>
+        <div
+          class="shebang"
+          id="post-contenttype"
+          contenteditable="true"
+          v-html="post === null ? '#!/bin/sh' : post.content_type"
+        />
 
         <slot></slot>
 
@@ -109,14 +118,23 @@ export default {
     <div class="card-content">
 
       <div class="form-field">
-        <div v-if="post===null" class="chips">
+        <div
+          v-if="post === null"
+          class="chips"
+        >
         </div>
-        <div v-else class="chips">
-          <div class="chip" v-for="tag in post.tags">
-            <span class="chip--text">{{tag}}</span>
+        <div
+          v-else
+          class="chips"
+        >
+          <div
+            class="chip"
+            v-for="tag in post.tags"
+          >
+            <span class="chip--text">{{ tag }}</span>
             <span class="chip--button">×</span>
           </div>
-        </div>  
+        </div>
         <label for="chip-input">
           Tags permettant de trouver cette fiche: [ ENTRER ] pour valider
         </label>

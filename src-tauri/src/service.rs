@@ -33,4 +33,33 @@ pub mod service {
         posts.insert_one(Post::default(title, content_type, content, tags)).unwrap();
         1
     }
+
+    pub fn update_post(
+        id: &str,
+        title: &str,
+        content_type: &str,
+        content: &str,
+        tags: &str
+    ) -> i32 {
+        let db: Database = establish_connection();
+        let posts: Collection<Post> = db.collection("posts");
+        let post: Post = Post::default(title, content_type, content, tags);
+
+        posts
+            .update_one(
+                doc! {
+                "id":id.to_owned()
+            },
+                doc! {
+                "$set":{
+                    "title":&post.title,
+                    "content_type": &post.content_type,
+                    "content":&post.content,
+                    "tags": &post.tags
+                }
+            }
+            )
+            .unwrap();
+        1
+    }
 }
