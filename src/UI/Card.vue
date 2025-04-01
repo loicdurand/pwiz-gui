@@ -1,5 +1,5 @@
 <script lang="ts">
-
+import { Post } from '../interfaces';
 import Tag from './Tag.vue';
 
 function fadeOut(target: HTMLElement) {
@@ -28,20 +28,12 @@ export default {
     Tag
   },
   props: {
-    id: {
-      type: String,
+    post: {
+      type: {} as Post,
       required: true
     },
-    title: {
-      type: String,
-      required: true
-    },
-    content: {
-      type: String,
-      required: true
-    },
-    tags: {
-      type: Array<String>,
+    openEditor: {
+      type: Function as () => any,
       required: true
     }
   },
@@ -58,7 +50,6 @@ export default {
       const menu = document.getElementById(`nav-${menu_id}`);
       const others = document.querySelectorAll(`.card-menu:not(#nav-${menu_id})`);
 
-      console.log(menu_id);
       [...others].forEach(elt => {
         elt.classList.remove("active");
       });
@@ -71,13 +62,13 @@ export default {
 </script>
 
 <template>
-  <article class="app-card" :data-tags="tags.join(' ')">
+  <article class="app-card" :data-tags="post.tags.join(' ')">
     <div class="card-preview">
       <span
         role="button"
         tabindex="0"
         class="icon-button copy-button pointer"
-        :data-content="content"
+        :data-content='post.content.join("\r\n")'
         @click="copy_to_clipboard"
       >
 
@@ -96,16 +87,16 @@ export default {
       </div>
     </div>
     <div class="card-content">
-      <h2 class="card-title">{{ title }}</h2>
+      <h2 class="card-title">{{ post.title }}</h2>
 
       <ul
-        v-if="tags?.length"
+        v-if="post.tags?.length"
         class="card-tags"
       >
         <ul class="card-tags-list">
 
           <li
-            v-for="tag in tags"
+            v-for="tag in post.tags"
             class="tag"
           >
 
@@ -126,23 +117,23 @@ export default {
         <i
           class="material-icons"
           title="Afficher le menu"
-          :data-id="id"
+          :data-id="post.id"
           @click="toggle_menu"
         >more_horiz</i>
       </span>
 
       <nav
-        :id="'nav-' + id"
+        :id="'nav-' + post.id"
         class="card-menu"
       >
         <ul>
           <li>
             <input
               type="radio"
-              :id="'details-option-' + id"
+              :id="'details-option-' + post.id"
               name="selector"
             >
-            <label :for="'details-option-' + id">Détails</label>
+            <label :for="'details-option-' + post.id">Détails</label>
 
             <div class="check">
               <div class="inside"></div>
@@ -151,10 +142,10 @@ export default {
           <li>
             <input
               type="radio"
-              :id="'dl-option-' + id"
+              :id="'dl-option-' + post.id"
               name="selector"
             >
-            <label :for="'dl-option-' + id">Télécharger</label>
+            <label :for="'dl-option-' + post.id">Télécharger</label>
 
             <div class="check">
               <div class="inside"></div>
@@ -163,10 +154,10 @@ export default {
           <li>
             <input
               type="radio"
-              :id="'share-option-' + id"
+              :id="'share-option-' + post.id"
               name="selector"
             >
-            <label :for="'share-option-' + id">Partager</label>
+            <label :for="'share-option-' + post.id">Partager</label>
 
             <div class="check">
               <div class="inside"></div>
@@ -175,10 +166,11 @@ export default {
           <li>
             <input
               type="radio"
-              :id="'mod-option-' + id"
+              :id="'mod-option-' + post.id"
               name="selector"
+              @change="openEditor(post)"
             >
-            <label :for="'mod-option-' + id">Modifier</label>
+            <label :for="'mod-option-' + post.id">Modifier</label>
 
             <div class="check">
               <div class="inside"></div>
@@ -187,10 +179,10 @@ export default {
           <li>
             <input
               type="radio"
-              :id="'suppr-option-' + id"
+              :id="'suppr-option-' + post.id"
               name="selector"
             >
-            <label :for="'suppr-option-' + id">Supprimer</label>
+            <label :for="'suppr-option-' + post.id">Supprimer</label>
 
             <div class="check">
               <div class="inside"></div>

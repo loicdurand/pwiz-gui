@@ -10,6 +10,18 @@ export default {
     mode: {
       type: Object,
       required: true
+    },
+    editor: {
+      type: Object,
+      required: true
+    },
+    openEditor: {
+      type: Function as () => any,
+      required: true
+    },
+    closeEditor: {
+      type: Function as () => any,
+      required: true
     }
   },
   components: {
@@ -18,21 +30,13 @@ export default {
   },
   data() {
     return {
-      menu_classes,
-      editor: {
-        open: false,
-        type: ""
-      }
+      menu_classes
     };
   },
   methods: {
-    openEditor() {
-      this.editor.open = true;
-      this.editor.type = "sh";
-    },
-    closeEditor() {
-      this.editor.open = false;
-      this.editor.type = "";
+    test() {
+      console.log(this.editor.post);
+      this.editor.open ? this.closeEditor(this.editor.post === null) : this.mode.edition = false
     }
   }
 }
@@ -43,7 +47,7 @@ export default {
   <button
     type="button"
     class="button back-button"
-    @click="editor.open ? closeEditor() : mode.edition = false"
+    @click="test"
   >
     <i class="material-icons">arrow_back</i>
     <span>Retour</span>
@@ -53,13 +57,13 @@ export default {
     Quel type de contenu souhaitez-vous créer?
   </p>
   <p v-else>
-  <span
-    id="post-title"
-    class="post-title"
-    contenteditable="true"
-  >
-    script.sh
-  </span>
+    <span
+      id="post-title"
+      class="post-title"
+      contenteditable="true"
+    >
+      script.sh
+    </span>
   </p>
 
   <div

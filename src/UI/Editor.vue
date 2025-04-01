@@ -1,6 +1,6 @@
 <script lang="ts">
-import { invoke } from "@tauri-apps/api/core";
 
+import { invoke } from "@tauri-apps/api/core";
 
 export default {
   name: 'Editor',
