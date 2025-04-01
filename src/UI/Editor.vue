@@ -12,8 +12,9 @@ export default {
     }
   },
   methods: {
-    async insert_post() {
+    async submit(){
       // recuil des valeurs de base
+      const id: HTMLElement | null = document.getElementById('post-id');
       const title: HTMLElement | null = document.getElementById('post-title');
       const content: HTMLElement | null = document.getElementById('post-content');
       const contenttype: HTMLElement | null = document.getElementById('post-contenttype');
@@ -21,15 +22,21 @@ export default {
       // recueil des tags
       const chips = document.querySelectorAll(".chip--text");
       const tags = chips ? [...chips].map(chip => chip.innerHTML) : [];
-      await invoke('insert_post', {
-        title: title?.innerHTML,
-        content: (content as HTMLTextAreaElement)?.value.trim(),
-        contenttype: contenttype?.innerHTML||"sh",
-        tags: tags.join(' ')
-      });
-      location.reload();
+      const post = {
+        id:(id as HTMLInputElement)?.value,
+         title: title?.innerHTML,
+         content: (content as HTMLTextAreaElement)?.value.trim(),
+         contenttype: contenttype?.innerHTML||"sh",
+         tags: tags.join(' ')
+       };
 
+       if(!post.id)
+      await invoke('insert_post', post);
+    else
+    console.log('update needed');
+       location.reload();
     }
+
   },
   mounted() {
     const input: HTMLInputElement | null = document.querySelector(".chip-input");
@@ -86,6 +93,8 @@ export default {
 
 <template>
 
+  <input type="hidden" id="post-id" :value="post===null?'':post.id">
+
   <article class="app-editor editable">
     <div class="card-preview">
 
@@ -123,7 +132,7 @@ export default {
     <footer class="card-footer">
       <button
         type="button"
-        @click="insert_post"
+        @click="submit"
       >
         Valider
       </button>
