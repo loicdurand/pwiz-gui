@@ -20,6 +20,18 @@ export default {
     create_new_line() {
       this.lines.push('');
       this.$forceUpdate();
+    },
+    escapeHTML(str: string): string {
+      const escape: Record<string, string> = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      };
+      return str.replace(/[&<>"']/g, (m: string) => {
+        return escape[m];
+      });
     }
   }
 }
@@ -27,19 +39,17 @@ export default {
 
 <template>
 
-  <code
-    class="terminal"
-  >
+  <code class="terminal">
 
     <span class="shebang" v-if="shebang === 'sh'">#!/bin/sh</span>
-    <span class="shebang" v-else>#!/bin/bash</span>
+    <code class="shebang" v-html="shebang" v-else />
 
 
     <br>
     <span v-for="line in lines">
-      <span class="green">~&nbsp;</span><span class="blue">❯&nbsp;</span>
+      <!--<span class="green">~</span><span class="blue">❯&nbsp;</span>>-->
       
-      <span class="yellow">{{ line }}</span>
+      <span class="line">{{ line }}</span>
       
       <br>
     </span>
@@ -76,8 +86,9 @@ export default {
     color: #0000ff;
   }
 
-  .yellow {
-    color: #ffff00;
+  .line {
+    color: var(--codeline-color);
+
   }
 
   /* mode édition */

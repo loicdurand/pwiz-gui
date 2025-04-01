@@ -1,10 +1,23 @@
 pub mod model {
     use serde::{ Deserialize, Serialize };
     use whoami::username;
+    use unique_id::Generator;
+    use unique_id::string::StringGenerator;
+
+    fn get_id() -> String {
+        let gen = StringGenerator::default();
+        let mut last = gen.next_id();
+        for _ in 1..100_000 {
+            let next = gen.next_id();
+            assert_ne!(last, next);
+            last = next;
+        }
+        last
+    }
 
     #[derive(Debug, Serialize, Deserialize)]
     pub struct Post {
-        // pub id: i32,
+        pub id: String,
         pub author: String,
         pub title: String,
         pub content: Vec<String>,
@@ -21,6 +34,7 @@ pub mod model {
             }
 
             Self {
+                id: get_id(),
                 author: username(),
                 title: title.to_string(),
                 content: lines,

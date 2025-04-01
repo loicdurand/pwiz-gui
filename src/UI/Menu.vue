@@ -7,8 +7,22 @@ const menu_classes = 's4 m4 l4';
 export default {
   name: "Menu",
   props: {
-    mode: Object
-
+    mode: {
+      type: Object,
+      required: true
+    },
+    editor: {
+      type: Object,
+      required: true
+    },
+    openEditor: {
+      type: Function as () => any,
+      required: true
+    },
+    closeEditor: {
+      type: Function as () => any,
+      required: true
+    }
   },
   components: {
     SquareCard,
@@ -16,21 +30,12 @@ export default {
   },
   data() {
     return {
-      menu_classes,
-      editor: {
-        open: false,
-        type: ""
-      }
+      menu_classes
     };
   },
   methods: {
-    openEditor() {
-      this.editor.open = true;
-      this.editor.type = "sh";
-    },
-    closeEditor() {
-      this.editor.open = false;
-      this.editor.type = "";
+    goBack() {
+      this.editor.open ? this.closeEditor(this.editor.post === null) : this.mode.edition = false
     }
   }
 }
@@ -41,7 +46,7 @@ export default {
   <button
     type="button"
     class="button back-button"
-    @click="editor.open ? closeEditor() : this.mode.edition = false"
+    @click="goBack"
   >
     <i class="material-icons">arrow_back</i>
     <span>Retour</span>
@@ -51,13 +56,13 @@ export default {
     Quel type de contenu souhaitez-vous créer?
   </p>
   <p v-else>
-  <div
-    id="post-title"
-    class="post-title"
-    contenteditable="true"
-  >
-    script.sh
-  </div>
+    <span
+      id="post-title"
+      class="post-title"
+      contenteditable="true"
+    >
+      {{ editor.post===null? "script.sh":editor.post.title}}
+    </span>
   </p>
 
   <div
@@ -148,14 +153,15 @@ export default {
     class="row app-list-of-articles mode-edition"
   >
 
-    <Editor content_type="shell">
+    <Editor :post="editor.post">
 
       <textarea
+
         class="code-textarea"
         id="post-content"
         placeholder="Tapez votre contenu ici"
         spellcheck="false"
-      ></textarea>
+      >{{ editor.post===null?'':editor.post.content.join("\r\n") }}</textarea>
 
     </Editor>
 

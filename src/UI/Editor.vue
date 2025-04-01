@@ -1,92 +1,121 @@
 <script lang="ts">
+
+import { Post } from '../interfaces';
 import { invoke } from "@tauri-apps/api/core";
 
+function removeTag(e: Event): void {
+  const target = e.currentTarget as HTMLElement;
+  const parent = target.parentElement;
+  if (parent)
+    parent.outerHTML = '';
+}
+
+function enable_tags() {
+  const input: HTMLInputElement | null = document.querySelector(".chip-input");
+  const chips: HTMLElement | null = document.querySelector(".chips");
+
+  if (input === null)
+    return;
+
+  document.querySelector(".form-field")?.addEventListener('click', () => {
+    input.focus();
+  });
+
+  input.addEventListener('keydown', function (event: KeyboardEvent) {
+
+    if (event.key === 'Enter') {
+
+      chips?.appendChild(function () {
+        const _chip = document.createElement('div');
+
+        _chip.classList.add('chip');
+
+        _chip.append(
+          (function () {
+            const _chip_text = document.createElement('span');
+            _chip_text.classList.add('chip--text');
+            _chip_text.innerHTML = input.value;
+
+            return _chip_text;
+          })(),
+          (function () {
+            const _chip_button = document.createElement('span');
+            _chip_button.classList.add('chip--button');
+            _chip_button.innerHTML = '×';
+            _chip_button.addEventListener('click', removeTag);
+
+            return _chip_button;
+          })()
+        );
+
+        return _chip;
+      }());
+      input.value = '';
+    }
+  });
+}
 
 export default {
   name: 'Editor',
   props: {
-    content_type: String
+    post: {
+      type: {} as Post | null,
+      required: true
+    }
   },
   methods: {
-    async insert_post() {
+    removeTag,
+    async submit() {
       // recuil des valeurs de base
+      const id: HTMLElement | null = document.getElementById('post-id');
       const title: HTMLElement | null = document.getElementById('post-title');
       const content: HTMLElement | null = document.getElementById('post-content');
+      const contenttype: HTMLElement | null = document.getElementById('post-contenttype');
 
       // recueil des tags
       const chips = document.querySelectorAll(".chip--text");
       const tags = chips ? [...chips].map(chip => chip.innerHTML) : [];
-      await invoke('insert_post', {
+      const post = {
+        id: (id as HTMLInputElement)?.value,
         title: title?.innerHTML,
         content: (content as HTMLTextAreaElement)?.value.trim(),
-        contenttype: "sh",
+        contenttype: contenttype?.innerHTML || "sh",
         tags: tags.join(' ')
-      });
-      location.reload();
+      };
 
+      if (!post.id)
+        await invoke('insert_post', post);
+      else
+        await invoke('update_post', post);
+      location.reload();
     }
+
   },
   mounted() {
-    const input: HTMLInputElement | null = document.querySelector(".chip-input");
-    const chips: HTMLElement | null = document.querySelector(".chips");
-
-    if (input === null)
-      return;
-
-    document.querySelector(".form-field")?.addEventListener('click', () => {
-      input.focus();
-    });
-
-    input.addEventListener('keydown', function (event: KeyboardEvent) {
-
-      if (event.key === 'Enter') {
-
-        chips?.appendChild(function () {
-          const _chip = document.createElement('div');
-
-          _chip.classList.add('chip');
-          _chip.addEventListener('click', chipClickHandler);
-
-          _chip.append(
-            (function () {
-              const _chip_text = document.createElement('span');
-              _chip_text.classList.add('chip--text');
-              _chip_text.innerHTML = input.value;
-
-              return _chip_text;
-            })(),
-            (function () {
-              const _chip_button = document.createElement('span');
-              _chip_button.classList.add('chip--button');
-              _chip_button.innerHTML = '×';
-
-              return _chip_button;
-            })()
-          );
-
-          return _chip;
-        }());
-        input.value = '';
-      }
-    });
-
-    function chipClickHandler(event: MouseEvent) {
-      if (chips) {
-        chips.removeChild(event.currentTarget as Node);
-      }
-    }
+    enable_tags();
   }
 }
 </script>
 
 <template>
 
+  <input
+    type="hidden"
+    id="post-id"
+    :value="post === null ? '' : post.id"
+  >
+
   <article class="app-editor editable">
     <div class="card-preview">
 
       <div class="card-window">
 
-        <div class="shebang">#!/bin/sh</div>
+        <div
+          class="shebang"
+          id="post-contenttype"
+          contenteditable="true"
+          v-html="post === null ? '#!/bin/sh' : post.content_type"
+        />
 
         <slot></slot>
 
@@ -95,7 +124,25 @@ export default {
     <div class="card-content">
 
       <div class="form-field">
-        <div class="chips">
+        <div
+          v-if="post === null"
+          class="chips"
+        >
+        </div>
+        <div
+          v-else
+          class="chips"
+        >
+          <div
+            class="chip"
+            v-for="tag in post.tags"
+          >
+            <span class="chip--text">{{ tag }}</span>
+            <span
+              class="chip--button"
+              @click="removeTag"
+            >×</span>
+          </div>
         </div>
         <label for="chip-input">
           Tags permettant de trouver cette fiche: [ ENTRER ] pour valider
@@ -112,7 +159,7 @@ export default {
     <footer class="card-footer">
       <button
         type="button"
-        @click="insert_post"
+        @click="submit"
       >
         Valider
       </button>
@@ -161,7 +208,7 @@ export default {
         padding: 30px 10px 0 10px;
         resize: none;
         overflow-y: scroll;
-        color: #ffff00;
+        color: var(--codeline-color);
         font-size: 18px;
         background: repeating-linear-gradient(rgb(18, 18, 18) 0, rgb(18, 18, 18) 29px, var(--grey-8) 30px, black 30px);
         line-height: 30px;

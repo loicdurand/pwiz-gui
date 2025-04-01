@@ -8,17 +8,20 @@ import Terminal from "./UI/Terminal.vue";
 import Loader from "./UI/Loader.vue";
 import Menu from "./UI/Menu.vue";
 
-interface Post {
-  author: string,
-  title: string,
-  content: string[],
-  content_type: string,
-  tags: string[];
-}
+import { Post } from "./interfaces";
 
 const mode = ref({ edition: false });
 let posts = ref<Post[]>([]);
 const loading = ref(true);
+const editor = ref<{
+  open: boolean;
+  type: string;
+  post: Post | null;
+}>({
+  open: false,
+  type: "",
+  post: null
+});
 
 async function get_posts() {
   loading.value = true;
@@ -27,6 +30,20 @@ async function get_posts() {
     posts.value.push(result);
   loading.value = false;
 };
+
+function openEditor(post: Post | null) {
+  mode.value.edition = true;
+  editor.value.open = true;
+  editor.value.type = "sh";
+  editor.value.post = post;
+  console.log({post});
+}
+
+function closeEditor(mode_edition_value: boolean) {
+  mode.value.edition = mode_edition_value;
+  editor.value.open = false;
+  editor.value.type = "";
+}
 
 get_posts();
 
@@ -58,9 +75,9 @@ get_posts();
         >
 
           <Card
-            :title="post.title"
-            :tags="post.tags"
-            :content="post.content"
+            :post="post"
+            :editor="editor"
+            :openEditor="() => openEditor(post)"
           >
 
             <Terminal
@@ -83,7 +100,12 @@ get_posts();
     class="container mode-edition"
   >
 
-    <Menu :mode="mode" />
+    <Menu
+      :mode="mode"
+      :editor="editor"
+      :openEditor="()=>openEditor(null)"
+      :closeEditor="closeEditor"
+    />
 
   </main>
 
