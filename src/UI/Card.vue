@@ -71,7 +71,7 @@ export default {
 </script>
 
 <template>
-  <article class="app-card">
+  <article class="app-card" :data-tags="tags.join(' ')">
     <div class="card-preview">
       <span
         role="button"

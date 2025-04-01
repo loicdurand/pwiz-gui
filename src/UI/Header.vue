@@ -1,5 +1,20 @@
 <script lang="ts">
 
+function filter(e: Event) {
+  const target = e.currentTarget as HTMLButtonElement;
+  const value = target.value.toLowerCase().trim();
+  const cards = document.querySelectorAll('.app-card');
+  cards.forEach(card => {
+    const tags = (card as HTMLElement)?.dataset.tags || "";
+    const re = new RegExp(value, "i");
+    if (value === "" || re.test(tags)) {
+      (card as HTMLElement).style.display = 'block';
+    } else {
+      (card as HTMLElement).style.display = 'none';
+    }
+  });
+}
+
 export default {
   name: 'Header',
   props: {
@@ -9,10 +24,19 @@ export default {
     create_post(e: Event) {
       const target = e.currentTarget as HTMLButtonElement;
       target.disabled = true;
-      this.mode.edition = true;
+      if (this.mode) {
+        this.mode.edition = true;
+      }
     }
-  }
+  },
+  mounted() {
+    // Recherche
+    const search = document.getElementById('search-term');
+    search?.addEventListener('keyup', filter);
+    search?.addEventListener('keydown', filter);
+  },
 }
+
 </script>
 
 <template>
@@ -21,6 +45,7 @@ export default {
       <div class="search">
         <input
           type="text"
+          id="search-term"
           class="search-term"
           placeholder="Termes à rechercher"
         >
@@ -53,11 +78,11 @@ export default {
 <style lang="scss" scoped>
 .app-header {
   position: absolute;
-    top: 0;
-    margin: 0 auto;
-    height: 90px;
-    width: 100%;
-    border-bottom: 1px solid var(--grey-3);
+  top: 0;
+  margin: 0 auto;
+  height: 90px;
+  width: 100%;
+  border-bottom: 1px solid var(--grey-3);
 
   // SEARCH
   & .app-search-wrap {
