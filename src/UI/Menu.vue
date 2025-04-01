@@ -61,7 +61,7 @@ export default {
       class="post-title"
       contenteditable="true"
     >
-      script.sh
+      {{ editor.post===null? "script.sh":editor.post.title}}
     </span>
   </p>
 
@@ -153,14 +153,15 @@ export default {
     class="row app-list-of-articles mode-edition"
   >
 
-    <Editor content_type="shell">
+    <Editor :post="editor.post">
 
       <textarea
+
         class="code-textarea"
         id="post-content"
         placeholder="Tapez votre contenu ici"
         spellcheck="false"
-      ></textarea>
+      >{{ editor.post===null?'':editor.post.content.join("\r\n") }}</textarea>
 
     </Editor>
 

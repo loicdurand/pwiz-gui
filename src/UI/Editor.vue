@@ -1,11 +1,15 @@
 <script lang="ts">
 
+import {Post} from '../interfaces';
 import { invoke } from "@tauri-apps/api/core";
 
 export default {
   name: 'Editor',
   props: {
-    content_type: String
+    post: {
+      type:{} as Post|null,
+      required:true
+    }
   },
   methods: {
     async insert_post() {
@@ -87,7 +91,7 @@ export default {
 
       <div class="card-window">
 
-        <div class="shebang" id="post-contenttype" contenteditable="true">#!/bin/sh</div>
+        <div class="shebang" id="post-contenttype" contenteditable="true" v-html="post===null?'#!/bin/sh':post.content_type"/>
 
         <slot></slot>
 
@@ -96,8 +100,14 @@ export default {
     <div class="card-content">
 
       <div class="form-field">
-        <div class="chips">
+        <div v-if="post===null" class="chips">
         </div>
+        <div v-else class="chips">
+          <div class="chip" v-for="tag in post.tags">
+            <span class="chip--text">{{tag}}</span>
+            <span class="chip--button">×</span>
+          </div>
+        </div>  
         <label for="chip-input">
           Tags permettant de trouver cette fiche: [ ENTRER ] pour valider
         </label>
