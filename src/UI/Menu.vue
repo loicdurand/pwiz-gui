@@ -34,8 +34,7 @@ export default {
     };
   },
   methods: {
-    test() {
-      console.log(this.editor.post);
+    goBack() {
       this.editor.open ? this.closeEditor(this.editor.post === null) : this.mode.edition = false
     }
   }
@@ -47,7 +46,7 @@ export default {
   <button
     type="button"
     class="button back-button"
-    @click="test"
+    @click="goBack"
   >
     <i class="material-icons">arrow_back</i>
     <span>Retour</span>
