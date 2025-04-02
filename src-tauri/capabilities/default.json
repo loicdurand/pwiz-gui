@@ -11,12 +11,39 @@
     "fs:default",
     {
       "identifier": "fs:scope",
-      "allow": [{ "path": "$TEMP" }, { "path": "$TEMP/**" }]
+      "allow": [
+        {
+          "path": "$TEMP"
+        },
+        {
+          "path": "$TEMP/**"
+        },
+        {
+          "path": "$DOWNLOAD"
+        },
+        {
+          "path": "$DOWNLOAD/*"
+        }
+      ]
     },
     {
       "identifier": "fs:allow-app-write",
-      "allow": [{ "path": "$TEMP" }, { "path": "$TEMP/**" }]
-    }
-
+      "allow": [
+        {
+          "path": "$TEMP"
+        },
+        {
+          "path": "$TEMP/**"
+        },
+        {
+          "path": "$DOWNLOAD"
+        },
+        {
+          "path": "$DOWNLOAD/*"
+        }
+      ]
+    },
+    "dialog:default",
+    "dialog:default"
   ]
 }

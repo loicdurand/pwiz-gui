@@ -29,15 +29,20 @@ fn delete_post(id: &str) -> i32 {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    tauri::Builder
-        ::default()
+    tauri::Builder::default()
+        .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_opener::init())
         .setup(|app| {
             let _ = app.fs_scope().allow_directory("./tmp", false);
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![get_posts, insert_post, update_post, delete_post])
+        .invoke_handler(tauri::generate_handler![
+            get_posts,
+            insert_post,
+            update_post,
+            delete_post
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
