@@ -1,6 +1,7 @@
 <script lang="ts">
 import { create } from '@tauri-apps/plugin-fs';
-import { tempDir, downloadDir } from '@tauri-apps/api/path';
+// import { tempDir, downloadDir } from '@tauri-apps/api/path';
+import { save } from '@tauri-apps/plugin-dialog';
 
 import { Post } from '../interfaces';
 import Tag from './Tag.vue';
@@ -26,19 +27,15 @@ function fadeOut(target: HTMLElement) {
 }
 
 async function download(data: string, filename: string) {
-  // create file
-  let targetDir='';
-  try {
-    targetDir = await downloadDir();
-  } catch (error) {
-    targetDir = await tempDir();
+  const path = await save();
+  if (path) {
+    const file = await create(path);
+    await file.write(new TextEncoder().encode(data));
+    await file.close();
+    console.log(path);
+  } else {
+    console.error("Aucun chemin fourni. Création du fichier abandonnée.");
   }
-  const name = filename.trim().replace(/\s/g, "_"); 
-  const path = `${targetDir}/${name}`;
-  const file = await create(path);
-  console.log(path);
-  await file.write(new TextEncoder().encode(data));
-  await file.close();
 }
 
 export default {
