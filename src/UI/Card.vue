@@ -56,13 +56,22 @@ export default {
       if (menu) {
         menu.classList.toggle('active');
       }
+    },
+    confirmDelete() {
+      const modal = document.getElementById('confirm-delete-modal');
+      if (modal)
+        modal.classList.add('visible');
     }
   }
 }
 </script>
 
 <template>
-  <article class="app-card" :data-tags="post.tags.join(' ')">
+
+  <article
+    class="app-card"
+    :data-tags="post.tags.join(' ')"
+  >
     <div class="card-preview">
       <span
         role="button"
@@ -124,6 +133,7 @@ export default {
 
       <nav
         :id="'nav-' + post.id"
+        :data-id="post.id"
         class="card-menu"
       >
         <ul>
@@ -176,13 +186,15 @@ export default {
               <div class="inside"></div>
             </div>
           </li>
-          <li>
+          <li @click="confirmDelete">
             <input
               type="radio"
               :id="'suppr-option-' + post.id"
               name="selector"
             >
-            <label :for="'suppr-option-' + post.id">Supprimer</label>
+            <label :for="'suppr-option-' + post.id">
+              Supprimer
+            </label>
 
             <div class="check">
               <div class="inside"></div>
@@ -338,6 +350,10 @@ export default {
         z-index: 9;
         cursor: pointer;
         -webkit-transition: all 0.25s linear;
+
+        & a {
+          color: inherit;
+        }
       }
 
       & ul li:hover label {

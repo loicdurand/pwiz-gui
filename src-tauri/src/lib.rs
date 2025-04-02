@@ -20,6 +20,11 @@ fn update_post(id: &str, title: &str, contenttype: &str, content: &str, tags:&st
     Service::update_post(id, title, contenttype, content, tags)
 }
 
+#[tauri::command]
+fn delete_post(id: &str) -> i32 {
+    Service::delete_post(id)
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -27,7 +32,8 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             get_posts,
             insert_post,
-            update_post
+            update_post,
+            delete_post
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

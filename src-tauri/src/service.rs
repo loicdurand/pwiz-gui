@@ -62,4 +62,14 @@ pub mod service {
             .unwrap();
         1
     }
+
+    pub fn delete_post(id: &str) -> i32 {
+        let db: Database = establish_connection();
+        let posts: Collection<Post> = db.collection("posts");
+
+        posts.delete_one(doc! {
+            "id":id.to_owned()
+        }).unwrap();
+        1
+    }
 }
