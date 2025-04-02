@@ -33,8 +33,14 @@ async function get_posts() {
 };
 
 async function delete_post(post: Post) {
+  const menu_actif: HTMLElement | null = document.querySelector('.active.card-menu');
+  if (!menu_actif)
+    return;
+
   loading.value = true;
-  console.log(post);
+  const post_id = menu_actif?.dataset.id;
+  await invoke('delete_post', { id: post_id });
+  location.reload();
 }
 
 function openEditor(post: Post | null) {
@@ -84,7 +90,6 @@ get_posts();
             :post="post"
             :editor="editor"
             :openEditor="() => openEditor(post)"
-            :deletePost="() => delete_post(post)"
           >
 
             <Terminal
@@ -133,6 +138,7 @@ get_posts();
             role="button"
             tabindex="0"
             href="#"
+            @click="delete_post"
           >
             Supprimer
           </a></li>

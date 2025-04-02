@@ -35,10 +35,6 @@ export default {
     openEditor: {
       type: Function as () => any,
       required: true
-    },
-    deletePost: {
-      type: Function as () => any,
-      required: true
     }
   },
   methods: {
@@ -137,6 +133,7 @@ export default {
 
       <nav
         :id="'nav-' + post.id"
+        :data-id="post.id"
         class="card-menu"
       >
         <ul>
