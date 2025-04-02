@@ -1,5 +1,5 @@
 pub mod service {
-    use polodb_core::{ bson::doc, Collection, CollectionT, Database };
+    use polodb_core::{bson::doc, Collection, CollectionT, Database};
     // use whoami::username;
     //   use std::process;
 
@@ -30,7 +30,9 @@ pub mod service {
         let db: Database = establish_connection();
         let posts: Collection<Post> = db.collection("posts");
 
-        posts.insert_one(Post::default(title, content_type, content, tags)).unwrap();
+        posts
+            .insert_one(Post::default(title, content_type, content, tags))
+            .unwrap();
         1
     }
 
@@ -39,7 +41,7 @@ pub mod service {
         title: &str,
         content_type: &str,
         content: &str,
-        tags: &str
+        tags: &str,
     ) -> i32 {
         let db: Database = establish_connection();
         let posts: Collection<Post> = db.collection("posts");
@@ -48,16 +50,16 @@ pub mod service {
         posts
             .update_one(
                 doc! {
-                "id":id.to_owned()
-            },
+                    "id":id.to_owned()
+                },
                 doc! {
-                "$set":{
-                    "title":&post.title,
-                    "content_type": &post.content_type,
-                    "content":&post.content,
-                    "tags": &post.tags
-                }
-            }
+                    "$set":{
+                        "title":&post.title,
+                        "content_type": &post.content_type,
+                        "content":&post.content,
+                        "tags": &post.tags
+                    }
+                },
             )
             .unwrap();
         1
@@ -67,9 +69,11 @@ pub mod service {
         let db: Database = establish_connection();
         let posts: Collection<Post> = db.collection("posts");
 
-        posts.delete_one(doc! {
-            "id":id.to_owned()
-        }).unwrap();
+        posts
+            .delete_one(doc! {
+                "id":id.to_owned()
+            })
+            .unwrap();
         1
     }
 }
