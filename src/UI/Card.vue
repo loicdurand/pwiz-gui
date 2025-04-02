@@ -1,4 +1,8 @@
 <script lang="ts">
+import { create } from '@tauri-apps/plugin-fs';
+// import { tempDir, downloadDir } from '@tauri-apps/api/path';
+import { save } from '@tauri-apps/plugin-dialog';
+
 import { Post } from '../interfaces';
 import Tag from './Tag.vue';
 
@@ -22,6 +26,18 @@ function fadeOut(target: HTMLElement) {
   }, 100);
 }
 
+async function download(data: string, filename: string) {
+  const path = await save();
+  if (path) {
+    const file = await create(path);
+    await file.write(new TextEncoder().encode(data));
+    await file.close();
+    console.log(path);
+  } else {
+    console.error("Aucun chemin fourni. Création du fichier abandonnée.");
+  }
+}
+
 export default {
   name: 'Card',
   components: {
@@ -38,6 +54,7 @@ export default {
     }
   },
   methods: {
+    download,
     copy_to_clipboard(e: Event): void {
       const target = e.currentTarget as HTMLElement;
       const content = target?.dataset.content || '';
@@ -154,6 +171,7 @@ export default {
               type="radio"
               :id="'dl-option-' + post.id"
               name="selector"
+              @change='download(post.content.join("\r\n"), post.title)'
             >
             <label :for="'dl-option-' + post.id">Télécharger</label>
 

@@ -1,8 +1,8 @@
 pub mod model {
-    use serde::{ Deserialize, Serialize };
-    use whoami::username;
-    use unique_id::Generator;
+    use serde::{Deserialize, Serialize};
     use unique_id::string::StringGenerator;
+    use unique_id::Generator;
+    use whoami::username;
 
     fn get_id() -> String {
         let gen = StringGenerator::default();
@@ -39,10 +39,7 @@ pub mod model {
                 title: title.to_string(),
                 content: lines,
                 content_type: content_type.to_string(),
-                tags: tags
-                    .iter()
-                    .map(|s| s.to_string())
-                    .collect(),
+                tags: tags.iter().map(|s| s.to_string()).collect(),
             }
         }
     }
