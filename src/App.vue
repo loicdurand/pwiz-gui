@@ -7,6 +7,7 @@ import Header from "./UI/Header.vue";
 import Terminal from "./UI/Terminal.vue";
 import Loader from "./UI/Loader.vue";
 import Menu from "./UI/Menu.vue";
+import Modal from "./UI/Modal.vue";
 
 import { Post } from "./interfaces";
 
@@ -31,12 +32,17 @@ async function get_posts() {
   loading.value = false;
 };
 
+async function delete_post(post: Post) {
+  loading.value = true;
+  console.log(post);
+}
+
 function openEditor(post: Post | null) {
   mode.value.edition = true;
   editor.value.open = true;
   editor.value.type = "sh";
   editor.value.post = post;
-  console.log({post});
+  console.log({ post });
 }
 
 function closeEditor(mode_edition_value: boolean) {
@@ -78,6 +84,7 @@ get_posts();
             :post="post"
             :editor="editor"
             :openEditor="() => openEditor(post)"
+            :deletePost="() => delete_post(post)"
           >
 
             <Terminal
@@ -103,10 +110,42 @@ get_posts();
     <Menu
       :mode="mode"
       :editor="editor"
-      :openEditor="()=>openEditor(null)"
+      :openEditor="() => openEditor(null)"
       :closeEditor="closeEditor"
     />
 
   </main>
+
+  <Modal id="confirm-delete-modal">
+    <p>
+      La fiche va être
+      <b>
+        définitivement
+      </b>
+      supprimée. Etes-vous sûr de vouloir continuer?
+    </p>
+
+    <template v-slot:footer>
+      <ul class="btns-group btns-group--inline">
+
+        <li><a
+            class="delete"
+            role="button"
+            tabindex="0"
+            href="#"
+          >
+            Supprimer
+          </a></li>
+        <li><a
+            class="abort"
+            role="button"
+            tabindex="0"
+            href="#"
+          >
+            Annuler
+          </a></li>
+      </ul>
+    </template>
+  </Modal>
 
 </template>
