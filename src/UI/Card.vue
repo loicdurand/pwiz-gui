@@ -26,15 +26,12 @@ function fadeOut(target: HTMLElement) {
   }, 100);
 }
 
-async function download(data: string, filename: string) {
+async function download(data: string) {
   const path = await save();
   if (path) {
     const file = await create(path);
     await file.write(new TextEncoder().encode(data));
     await file.close();
-    console.log(path);
-  } else {
-    console.error("Aucun chemin fourni. Création du fichier abandonnée.");
   }
 }
 
