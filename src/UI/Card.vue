@@ -1,10 +1,22 @@
 <script lang="ts">
 import { create } from '@tauri-apps/plugin-fs';
-// import { tempDir, downloadDir } from '@tauri-apps/api/path';
-import { save } from '@tauri-apps/plugin-dialog';
+import { save, message } from '@tauri-apps/plugin-dialog';
+import { time_format,shebang_to_type } from '../utils';
 
 import { Post } from '../interfaces';
 import Tag from './Tag.vue';
+
+function recode(str: string): string {
+  return str.replace(/&amp;|&lt;|&gt;|&quot;|&#039;/g, (m: string) => {
+    return ({
+      '&amp;': '&',
+      '&lt;': '<',
+      '&gt;': '>',
+      '&quot;': '"',
+      '&#039;': "'"
+    })[m] || m;
+  });
+}
 
 function fadeOut(target: HTMLElement) {
   const fadeTarget = target.querySelector('.copied') as HTMLElement | null;
@@ -24,16 +36,7 @@ function fadeOut(target: HTMLElement) {
       fadeTarget.style.opacity = '1';
     }
   }, 100);
-}
-
-async function download(data: string) {
-  const path = await save();
-  if (path) {
-    const file = await create(path);
-    await file.write(new TextEncoder().encode(data));
-    await file.close();
-  }
-}
+};
 
 export default {
   name: 'Card',
@@ -51,7 +54,28 @@ export default {
     }
   },
   methods: {
-    download,
+    recode,
+    async download(data: string) {
+      const path = await save();
+      if (path) {
+        const file = await create(path);
+        await file.write(new TextEncoder().encode(data));
+        await file.close();
+      }
+    },
+    async show_details(post: Post) {
+      const lines = post.content.length;
+      const sloc = post.content.filter(Boolean).length;
+      const size = new TextEncoder().encode(post.content.join("\r\n")).length;
+      const message_content = `
+        Date de création: ${time_format(post.created_at)}
+        Dernière modification: ${time_format(post.last_modified_at)}
+        Type: ${shebang_to_type(post.content_type)},
+        Lignes: ${lines} (${sloc} non vides)
+        Taille: ${size}B
+      `;
+      await message(message_content, post.title);
+    },
     copy_to_clipboard(e: Event): void {
       const target = e.currentTarget as HTMLElement;
       const content = target?.dataset.content || '';
@@ -156,6 +180,7 @@ export default {
               type="radio"
               :id="'details-option-' + post.id"
               name="selector"
+              @change="show_details(post)"
             >
             <label :for="'details-option-' + post.id">Détails</label>
 
@@ -168,7 +193,7 @@ export default {
               type="radio"
               :id="'dl-option-' + post.id"
               name="selector"
-              @change='download(post.content.join("\r\n"), post.title)'
+              @change='download([recode(post.content_type), ...post.content].join("\r\n"))'
             >
             <label :for="'dl-option-' + post.id">Télécharger</label>
 

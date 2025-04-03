@@ -1,9 +1,15 @@
 pub mod service {
-    use polodb_core::{bson::doc, Collection, CollectionT, Database};
+    use polodb_core::{  bson::doc, Collection, CollectionT, Database };
+    use chrono::prelude::Utc;
     // use whoami::username;
     //   use std::process;
 
     use crate::model::model::Post;
+
+    fn get_unix_timestamp_ms() -> i64 {
+        let now = Utc::now();
+        now.timestamp_millis()
+    }
 
     pub fn establish_connection() -> Database {
         let db_path = String::from("./pwiz.db"); // chemin de la BDD
@@ -30,9 +36,7 @@ pub mod service {
         let db: Database = establish_connection();
         let posts: Collection<Post> = db.collection("posts");
 
-        posts
-            .insert_one(Post::default(title, content_type, content, tags))
-            .unwrap();
+        posts.insert_one(Post::default(title, content_type, content, tags)).unwrap();
         1
     }
 
@@ -41,11 +45,12 @@ pub mod service {
         title: &str,
         content_type: &str,
         content: &str,
-        tags: &str,
+        tags: &str
     ) -> i32 {
         let db: Database = establish_connection();
         let posts: Collection<Post> = db.collection("posts");
         let post: Post = Post::default(title, content_type, content, tags);
+        let now = get_unix_timestamp_ms();
 
         posts
             .update_one(
@@ -57,9 +62,10 @@ pub mod service {
                         "title":&post.title,
                         "content_type": &post.content_type,
                         "content":&post.content,
-                        "tags": &post.tags
+                        "tags": &post.tags,
+                        "last_modified_at": now
                     }
-                },
+                }
             )
             .unwrap();
         1
@@ -69,11 +75,9 @@ pub mod service {
         let db: Database = establish_connection();
         let posts: Collection<Post> = db.collection("posts");
 
-        posts
-            .delete_one(doc! {
+        posts.delete_one(doc! {
                 "id":id.to_owned()
-            })
-            .unwrap();
+            }).unwrap();
         1
     }
 }
