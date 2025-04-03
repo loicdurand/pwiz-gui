@@ -41,8 +41,7 @@ export default {
 
   <code class="terminal">
 
-    <span class="shebang" v-if="shebang === 'sh'">#!/bin/sh</span>
-    <code class="shebang" v-html="shebang" v-else />
+    <code class="shebang" v-html="shebang" />
 
 
     <br>

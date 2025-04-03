@@ -1,10 +1,21 @@
 <script lang="ts">
 import { create } from '@tauri-apps/plugin-fs';
-// import { tempDir, downloadDir } from '@tauri-apps/api/path';
 import { save } from '@tauri-apps/plugin-dialog';
 
 import { Post } from '../interfaces';
 import Tag from './Tag.vue';
+
+function recode(str: string): string {
+  return str.replace(/&amp;|&lt;|&gt;|&quot;|&#039;/g, (m: string) => {
+    return ({
+      '&amp;': '&',
+      '&lt;': '<',
+      '&gt;': '>',
+      '&quot;': '"',
+      '&#039;': "'"
+    })[m] || m;
+  });
+}
 
 function fadeOut(target: HTMLElement) {
   const fadeTarget = target.querySelector('.copied') as HTMLElement | null;
@@ -24,16 +35,7 @@ function fadeOut(target: HTMLElement) {
       fadeTarget.style.opacity = '1';
     }
   }, 100);
-}
-
-async function download(data: string) {
-  const path = await save();
-  if (path) {
-    const file = await create(path);
-    await file.write(new TextEncoder().encode(data));
-    await file.close();
-  }
-}
+};
 
 export default {
   name: 'Card',
@@ -51,7 +53,15 @@ export default {
     }
   },
   methods: {
-    download,
+    recode,
+    async download(data: string) {
+      const path = await save();
+      if (path) {
+        const file = await create(path);
+        await file.write(new TextEncoder().encode(data));
+        await file.close();
+      }
+    },
     copy_to_clipboard(e: Event): void {
       const target = e.currentTarget as HTMLElement;
       const content = target?.dataset.content || '';
@@ -168,7 +178,7 @@ export default {
               type="radio"
               :id="'dl-option-' + post.id"
               name="selector"
-              @change='download(post.content.join("\r\n"), post.title)'
+              @change='download([recode(post.content_type), ...post.content].join("\r\n"))'
             >
             <label :for="'dl-option-' + post.id">Télécharger</label>
 
