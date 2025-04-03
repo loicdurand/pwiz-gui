@@ -27,4 +27,5 @@ whoami = "1.6.0"
 unique_id = "0.1.5"
 tauri-plugin-fs = "2"
 tauri-plugin-dialog = "2"
+chrono = "0.4.40"
 

@@ -1,6 +1,7 @@
 <script lang="ts">
 import { create } from '@tauri-apps/plugin-fs';
-import { save } from '@tauri-apps/plugin-dialog';
+import { save, message } from '@tauri-apps/plugin-dialog';
+import { time_format,shebang_to_type } from '../utils';
 
 import { Post } from '../interfaces';
 import Tag from './Tag.vue';
@@ -61,6 +62,19 @@ export default {
         await file.write(new TextEncoder().encode(data));
         await file.close();
       }
+    },
+    async show_details(post: Post) {
+      const lines = post.content.length;
+      const sloc = post.content.filter(Boolean).length;
+      const size = new TextEncoder().encode(post.content.join("\r\n")).length;
+      const message_content = `
+        Date de création: ${time_format(post.created_at)}
+        Dernière modification: ${time_format(post.last_modified_at)}
+        Type: ${shebang_to_type(post.content_type)},
+        Lignes: ${lines} (${sloc} non vides)
+        Taille: ${size}B
+      `;
+      await message(message_content, post.title);
     },
     copy_to_clipboard(e: Event): void {
       const target = e.currentTarget as HTMLElement;
@@ -166,6 +180,7 @@ export default {
               type="radio"
               :id="'details-option-' + post.id"
               name="selector"
+              @change="show_details(post)"
             >
             <label :for="'details-option-' + post.id">Détails</label>
 
