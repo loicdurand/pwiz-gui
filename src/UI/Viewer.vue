@@ -48,7 +48,7 @@ export default {
       const content = target?.dataset.content || '';
       navigator.clipboard.writeText(content);
       fadeOut(target);
-      
+
       function fadeOut(target: HTMLElement) {
         const fadeTarget = target.querySelector('.copied') as HTMLElement | null;
         if (!fadeTarget)
@@ -68,7 +68,8 @@ export default {
           }
         }, 100);
       }
-    },
+    }
+
   }
 }
 </script>
@@ -83,7 +84,11 @@ export default {
     <span>Retour</span>
   </button>
 
-  <p>
+  <p
+    contenteditable="false"
+    class="post-title"
+    id="post-title"
+  >
     {{ post.title }}
   </p>
   <div class="editor">
@@ -145,6 +150,7 @@ export default {
       <p v-for="line in post.content">{{ line || "\n" }}</p>
     </code>
 </pre>
+
   </div>
 
 </template>
@@ -163,6 +169,15 @@ export default {
   & .material-icons {
     font-size: 14px;
     margin-right: 6px;
+  }
+}
+
+.post-title {
+  width: 100px;
+  margin: 0 auto;
+
+  &[contenteditable="true"] {
+    border: 1px dotted var(--grey-4);
   }
 }
 
@@ -200,8 +215,10 @@ export default {
         & .copied {
           display: none;
           position: absolute;
-          right: 30px;
-          top: -3px;
+          right: -6px;
+          top: -33px;
+          background-color: rgba(255, 255, 255, .15);
+          padding: 3px;
         }
 
       }
