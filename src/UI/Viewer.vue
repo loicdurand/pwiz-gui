@@ -152,7 +152,7 @@ export default {
 
     </div>
     <pre>
-    <p class="shebang">{{ post.content_type }}</p>
+    <p class="shebang" v-html="post.content_type" />
     <code>
       <p v-for="line in post.content">{{ line || "\n" }}</p>
     </code>
