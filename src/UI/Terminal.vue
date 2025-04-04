@@ -77,6 +77,8 @@ export default {
   .line {
     color: var(--codeline-color);
     white-space: pre;
+    font-size: 15px;
+    line-height: 1;
   }
 
   /* mode édition */
