@@ -40,9 +40,10 @@ export default {
     {{ post.title }}
   </p>
   <pre>
-  <code>
-    <p v-for="line in post.content">{{ line }}</p>
-  </code>
+    <p class="shebang">{{ post.content_type }}</p>
+    <code>
+      <p v-for="line in post.content">{{ line || "\n" }}</p>
+    </code>
 </pre>
 
 </template>
@@ -69,6 +70,17 @@ pre {
   align-items: center;
   justify-content: center;
   margin: 35px 0;
+  position: relative;
+
+  & .shebang {
+    position: absolute;
+    top: 35px;
+    color: var(--grey-5);
+    font-style: italic;
+    font-size: 0.75rem;
+    z-index: 1;
+    left: 40px;
+  }
 }
 
 code {
