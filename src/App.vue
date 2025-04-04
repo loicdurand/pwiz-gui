@@ -8,10 +8,14 @@ import Terminal from "./UI/Terminal.vue";
 import Loader from "./UI/Loader.vue";
 import Menu from "./UI/Menu.vue";
 import Modal from "./UI/Modal.vue";
+import Viewer from "./UI/Viewer.vue";
 
 import { Post } from "./interfaces";
 
-const mode = ref({ edition: false });
+const mode = ref({
+  edition: false,
+  affichage: false
+});
 let posts = ref<Post[]>([]);
 const loading = ref(true);
 const editor = ref<{
@@ -48,7 +52,11 @@ function openEditor(post: Post | null) {
   editor.value.open = true;
   editor.value.type = "sh";
   editor.value.post = post;
-  console.log({ post });
+}
+
+function openViewer(post: Post) {
+  mode.value.affichage = true;
+  editor.value.post = post;
 }
 
 function closeEditor(mode_edition_value: boolean) {
@@ -64,7 +72,7 @@ get_posts();
 <template>
 
   <main
-    v-if="!mode.edition"
+    v-if="!mode.edition && !mode.affichage"
     class="container"
   >
 
@@ -95,6 +103,7 @@ get_posts();
             <Terminal
               :shebang="post.content_type"
               :lines="post.content"
+              @click="() => openViewer(post)"
             />
 
           </Card>
@@ -108,7 +117,7 @@ get_posts();
   </main>
 
   <main
-    v-else
+    v-else-if="mode.edition"
     class="container mode-edition"
   >
 
@@ -117,6 +126,18 @@ get_posts();
       :editor="editor"
       :openEditor="() => openEditor(null)"
       :closeEditor="closeEditor"
+    />
+
+  </main>
+
+  <main
+    v-else-if="mode.affichage"
+    class="container mode-edition"
+  >
+
+    <Viewer
+      :editor="editor"
+      :mode="mode"
     />
 
   </main>

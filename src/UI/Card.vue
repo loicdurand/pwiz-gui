@@ -254,6 +254,7 @@ export default {
 .app-card {
   height: 50vh;
   min-width: 100%;
+  max-width: 100%;
   background: white;
   display: inline-block;
   margin: auto auto 1rem auto;

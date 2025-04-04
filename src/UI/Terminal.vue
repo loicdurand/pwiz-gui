@@ -21,18 +21,6 @@ export default {
       this.lines.push('');
       this.$forceUpdate();
     },
-    escapeHTML(str: string): string {
-      const escape: Record<string, string> = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#039;'
-      };
-      return str.replace(/[&<>"']/g, (m: string) => {
-        return escape[m];
-      });
-    }
   }
 }
 </script>
@@ -45,7 +33,7 @@ export default {
 
 
     <br>
-    <span v-for="line in lines">
+    <span v-for="line in lines.slice(0, 15)">
       <!--<span class="green">~</span><span class="blue">❯&nbsp;</span>>-->
       
       <span class="line">{{ line }}</span>
@@ -59,17 +47,18 @@ export default {
 <style lang="scss" scoped>
 .terminal {
   display: block;
-  background-color: #263238; // var(--purple-10);
+  background-color: var(--terminal-color); // var(--purple-10);
   border-top-left-radius: 14px;
   border-top-right-radius: 14px;
-  font-family: 'Fira Code', monospace;
+  // font-family: 'Fira Code', monospace;
   font-size: 18px;
   color: white;
   margin: 0;
   padding: .65rem 1rem 1rem 1rem;
   text-align: left;
   height: 100%;
-  overflow-y: scroll;
+  overflow: hidden;
+  cursor: pointer;
 
   .shebang {
     color: var(--grey-6);
@@ -87,7 +76,7 @@ export default {
 
   .line {
     color: var(--codeline-color);
-
+    white-space: pre;
   }
 
   /* mode édition */

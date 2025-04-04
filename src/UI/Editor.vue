@@ -78,7 +78,7 @@ export default {
       const post = {
         id: (id as HTMLInputElement)?.value,
         title: title?.innerHTML,
-        content: (content as HTMLTextAreaElement)?.value.trim(),
+        content: (content as HTMLTextAreaElement)?.value,
         contenttype: contenttype?.innerHTML || "sh",
         tags: tags.join(' ')
       };
@@ -135,7 +135,7 @@ export default {
         >
           <div
             class="chip"
-            v-for="tag in post.tags"
+            v-for="tag in post.tags.filter(Boolean)"
           >
             <span class="chip--text">{{ tag }}</span>
             <span
@@ -202,7 +202,7 @@ export default {
       }
 
       & .code-textarea {
-        border: 1px solid rgb(13, 221, 240);
+        border: 1px solid var(--terminal-color); // rgb(13, 221, 240);
         width: 100%;
         height: 100%;
         padding: 30px 10px 0 10px;
@@ -210,7 +210,7 @@ export default {
         overflow-y: scroll;
         color: var(--codeline-color);
         font-size: 18px;
-        background: repeating-linear-gradient(rgb(18, 18, 18) 0, rgb(18, 18, 18) 29px, var(--grey-8) 30px, black 30px);
+        background: repeating-linear-gradient(var(--terminal-color) 0, var(--terminal-color) 29px, var(--grey-8) 30px, black 30px);
         line-height: 30px;
       }
     }

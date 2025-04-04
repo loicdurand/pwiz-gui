@@ -39,7 +39,7 @@ pub mod model {
             let tags = tags.split(' ').collect::<Vec<&str>>();
             let mut lines: Vec<String> = Vec::new();
             for line in content.lines() {
-                lines.push(line.trim().to_string());
+                lines.push(line.to_string());
             }
 
             Self {
