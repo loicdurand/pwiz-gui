@@ -1,4 +1,6 @@
 <script lang="ts">
+import { create } from '@tauri-apps/plugin-fs';
+import { save } from '@tauri-apps/plugin-dialog';
 import { Post } from '../interfaces';
 
 export default {
@@ -21,7 +23,52 @@ export default {
   methods: {
     goBack() {
       this.mode.affichage = false
-    }
+    },
+    recode(str: string): string {
+      return str.replace(/&amp;|&lt;|&gt;|&quot;|&#039;/g, (m: string) => {
+        return ({
+          '&amp;': '&',
+          '&lt;': '<',
+          '&gt;': '>',
+          '&quot;': '"',
+          '&#039;': "'"
+        })[m] || m;
+      });
+    },
+    async download(data: string) {
+      const path = await save();
+      if (path) {
+        const file = await create(path);
+        await file.write(new TextEncoder().encode(data));
+        await file.close();
+      }
+    },
+    copy_to_clipboard(e: Event): void {
+      const target = e.currentTarget as HTMLElement;
+      const content = target?.dataset.content || '';
+      navigator.clipboard.writeText(content);
+      fadeOut(target);
+      
+      function fadeOut(target: HTMLElement) {
+        const fadeTarget = target.querySelector('.copied') as HTMLElement | null;
+        if (!fadeTarget)
+          return;
+
+        fadeTarget.style.display = "inline";
+        const fadeEffect = setInterval(function () {
+          if (fadeTarget && !fadeTarget.style.opacity) {
+            fadeTarget.style.opacity = '1';
+          }
+          if (fadeTarget && parseFloat(fadeTarget.style.opacity) > 0) {
+            fadeTarget.style.opacity = (parseFloat(fadeTarget.style.opacity) - 0.1).toString();
+          } else if (fadeTarget) {
+            clearInterval(fadeEffect);
+            fadeTarget.style.display = "none";
+            fadeTarget.style.opacity = '1';
+          }
+        }, 100);
+      }
+    },
   }
 }
 </script>
@@ -57,14 +104,14 @@ export default {
             >mode_edit</i>
           </span>
         </li>
-        <li></li>
+
         <li>
           <span
             role="button"
             tabindex="0"
             class="icon-button download-button pointer"
             :data-content='post.content.join("\r\n")'
-            @click=""
+            @click='download([recode(post.content_type), ...post.content].join("\r\n"))'
           >
             <i
               class="material-icons"
@@ -78,7 +125,7 @@ export default {
             tabindex="0"
             class="icon-button copy-button pointer"
             :data-content='post.content.join("\r\n")'
-            @click=""
+            @click="copy_to_clipboard"
           >
             <span class="copied">Copié!</span>
             <i
