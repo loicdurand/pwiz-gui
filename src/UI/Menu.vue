@@ -2,7 +2,7 @@
 import SquareCard from './SquareCard.vue';
 import Editor from './Editor.vue';
 
-const menu_classes = 's4 m4 l2';
+const menu_classes = 's4 m3 l2';
 
 export default {
   name: "Menu",

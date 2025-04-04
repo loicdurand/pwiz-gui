@@ -39,12 +39,66 @@ export default {
   <p>
     {{ post.title }}
   </p>
-  <pre>
+  <div class="editor">
+    <div class="controls">
+      <div class="infos">{{ post.content.length }} lignes - {{ post.content.filter(Boolean).length }} non vides</div>
+      <ul>
+        <li>
+          <span
+            role="button"
+            tabindex="0"
+            class="icon-button download-button pointer"
+            :data-content='post.content.join("\r\n")'
+            @click=""
+          >
+            <i
+              class="material-icons"
+              title="Modifier"
+            >mode_edit</i>
+          </span>
+        </li>
+        <li></li>
+        <li>
+          <span
+            role="button"
+            tabindex="0"
+            class="icon-button download-button pointer"
+            :data-content='post.content.join("\r\n")'
+            @click=""
+          >
+            <i
+              class="material-icons"
+              title="Télécharger"
+            >vertical_align_bottom</i>
+          </span>
+        </li>
+        <li>
+          <span
+            role="button"
+            tabindex="0"
+            class="icon-button copy-button pointer"
+            :data-content='post.content.join("\r\n")'
+            @click=""
+          >
+            <span class="copied">Copié!</span>
+            <i
+              class="material-icons"
+              title="Copier"
+            >content_copy</i>
+          </span>
+        </li>
+
+
+      </ul>
+
+    </div>
+    <pre>
     <p class="shebang">{{ post.content_type }}</p>
     <code>
       <p v-for="line in post.content">{{ line || "\n" }}</p>
     </code>
 </pre>
+  </div>
 
 </template>
 
@@ -62,6 +116,49 @@ export default {
   & .material-icons {
     font-size: 14px;
     margin-right: 6px;
+  }
+}
+
+.editor {
+  margin: 0;
+  padding: 0;
+
+  .controls {
+    border: 1px solid var(--grey-5);
+    height: 40px;
+    margin: 35px 16px -51px 16px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    position: relative;
+    color: var(--grey-7);
+
+    & .infos {
+      height: 100%;
+      line-height: 41px;
+      display: inline;
+    }
+
+    & ul {
+      margin: 0;
+      padding: 0;
+      position: absolute;
+      top: .5rem;
+      right: .5rem;
+      list-style: none;
+
+      & li {
+        display: inline-block;
+        margin-right: .5rem;
+
+        & .copied {
+          display: none;
+          position: absolute;
+          right: 30px;
+          top: -3px;
+        }
+
+      }
+    }
   }
 }
 
@@ -89,7 +186,8 @@ code {
   padding: 0 3rem;
   margin: 1rem;
   position: relative;
-  border-radius: 5px; // 0.25rem;
+  border-bottom-left-radius: 5px; // 0.25rem;
+  border-bottom-right-radius: 5px; // 0.25rem;
   counter-reset: step;
   counter-increment: step 0;
   transition: background 0.3s;
@@ -97,6 +195,21 @@ code {
   width: 100%;
   max-width: 1000%;
   min-height: calc(100vh - 135px);
+
+  & .controls {
+    border: 1px solid var(--grey-5);
+    position: absolute;
+    top: -1.5rem;
+    left: 0;
+    width: 100%;
+    height: 1.5rem;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+
+    &>div {
+      position: relative;
+    }
+  }
 }
 
 code:focus {
