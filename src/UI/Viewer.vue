@@ -24,6 +24,13 @@ export default {
     goBack() {
       this.mode.affichage = false
     },
+    mode_edit() {
+      this.mode.affichage = false;
+      this.mode.edition = true;
+      this.editor.open = true;
+      this.editor.type = "sh";
+      this.editor.post = this.post;
+    },
     recode(str: string): string {
       return str.replace(/&amp;|&lt;|&gt;|&quot;|&#039;/g, (m: string) => {
         return ({
@@ -101,7 +108,7 @@ export default {
             tabindex="0"
             class="icon-button download-button pointer"
             :data-content='post.content.join("\r\n")'
-            @click=""
+            @click="mode_edit"
           >
             <i
               class="material-icons"
