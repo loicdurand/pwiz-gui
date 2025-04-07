@@ -1,5 +1,7 @@
 <script lang="ts">
 
+import { hljs,get_lang_by_shebang } from '../hljs_init';
+
 export default {
   name: 'Terminal',
   props: {
@@ -21,60 +23,71 @@ export default {
       this.lines.push('');
       this.$forceUpdate();
     },
-    escapeHTML(str: string): string {
-      const escape: Record<string, string> = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#039;'
-      };
-      return str.replace(/[&<>"']/g, (m: string) => {
-        return escape[m];
-      });
-    }
+  },
+  data() {
+    const lines = this.lines.slice(0, 15);
+    const lang = get_lang_by_shebang(this.shebang);
+    return {
+      hightlighted: lang ? lines.map(line => {
+        return hljs.highlight(line as string,
+          { language: lang }
+        ).value
+      }) : lines
+    };
   }
 }
 </script>
 
 <template>
 
-  <code class="terminal">
+  <pre class="terminal">
+    <code >
 
-    <code class="shebang" v-html="shebang" />
+<p class="shebang" v-html="shebang" />
 
 
-    <br>
-    <span v-for="line in lines">
-      <!--<span class="green">~</span><span class="blue">❯&nbsp;</span>>-->
-      
-      <span class="line">{{ line }}</span>
-      
-      <br>
-    </span>
-  </code>
+<br>
+<span v-for="line in hightlighted">
+  <!--<span class="green">~</span><span class="blue">❯&nbsp;</span>>-->
+  
+  <span class="line" v-html="line"/>
+  
+  <br>
+</span>
+</code>
+  </pre>
 
 </template>
 
 <style lang="scss" scoped>
 .terminal {
   display: block;
-  background-color: #263238; // var(--purple-10);
+  background-color: var(--terminal-color);
   border-top-left-radius: 14px;
   border-top-right-radius: 14px;
-  font-family: 'Fira Code', monospace;
-  font-size: 18px;
-  color: white;
   margin: 0;
-  padding: .65rem 1rem 1rem 1rem;
+  padding: 0 10px;
   text-align: left;
   height: 100%;
-  overflow-y: scroll;
+  overflow: hidden;
+  cursor: pointer;
+
+  & code {
+    width: 100%;
+    height: 100%;
+    display: block;
+    white-space: wrap;
+    /* line-height: 0.5; */
+    margin-top: -10px;
+    overflow: hidden;
+    padding-top: 6px;
+  }
 
   .shebang {
     color: var(--grey-6);
     font-style: italic;
     font-size: .75rem;
+    margin-bottom: -24px;
   }
 
   .green {
@@ -87,7 +100,9 @@ export default {
 
   .line {
     color: var(--codeline-color);
-
+    white-space: pre;
+    font-size: 15px;
+    line-height: 1;
   }
 
   /* mode édition */
