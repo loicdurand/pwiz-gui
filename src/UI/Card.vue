@@ -5,6 +5,7 @@ import { time_format,shebang_to_type } from '../utils';
 
 import { Post } from '../interfaces';
 import Tag from './Tag.vue';
+import { get_lang_by_shebang } from '../hljs_init';
 
 function recode(str: string): string {
   return str.replace(/&amp;|&lt;|&gt;|&quot;|&#039;/g, (m: string) => {
@@ -64,16 +65,19 @@ export default {
       }
     },
     async show_details(post: Post) {
+      const lang = get_lang_by_shebang(post.content_type);
       const lines = post.content.length;
       const sloc = post.content.filter(Boolean).length;
       const size = new TextEncoder().encode(post.content.join("\r\n")).length;
       const message_content = `
         Date de création: ${time_format(post.created_at)}
         Dernière modification: ${time_format(post.last_modified_at)}
-        Type: ${shebang_to_type(post.content_type)},
+        Type: ${shebang_to_type(post.content_type)}
         Lignes: ${lines} (${sloc} non vides)
         Taille: ${size}B
+        Langage: ${lang || 'non défini'}
       `;
+      
       await message(message_content, post.title);
     },
     copy_to_clipboard(e: Event): void {
@@ -201,7 +205,7 @@ export default {
               <div class="inside"></div>
             </div>
           </li>
-          <li>
+          <!-- <li>
             <input
               type="radio"
               :id="'share-option-' + post.id"
@@ -212,7 +216,7 @@ export default {
             <div class="check">
               <div class="inside"></div>
             </div>
-          </li>
+          </li> -->
           <li>
             <input
               type="radio"
