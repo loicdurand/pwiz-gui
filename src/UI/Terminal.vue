@@ -1,5 +1,45 @@
 <script lang="ts">
 
+import hljs from 'highlight.js/lib/core';
+import javascript from 'highlight.js/lib/languages/javascript';
+import bash from 'highlight.js/lib/languages/bash';
+import php from 'highlight.js/lib/languages/php';
+import html from 'highlight.js/lib/languages/xml';
+import css from 'highlight.js/lib/languages/css';
+import rust from 'highlight.js/lib/languages/rust';
+import python from 'highlight.js/lib/languages/python';
+
+[javascript, bash, php, html, css, rust, python].forEach((lang) => {
+  hljs.registerLanguage(lang.name, lang);
+});
+
+function get_lang_by_shebang(shebang: string) {
+  if (shebang.startsWith('#!/usr/bin/env')) {
+    const [, lang] = shebang.split(/\s/).filter(Boolean);
+    return lang;
+  }else if (shebang.startsWith('&lt;html')) {
+    return 'xml';
+  }
+  switch (shebang) {
+    case '#!/bin/bash':
+    case '#!/bin/sh':
+      return 'bash';
+    case '&lt;?php':
+      return 'php';
+    case '// js':
+      return 'javascript';
+    case '&lt;!-- html --&gt;':
+      return 'xml';
+    case '// css':
+      return 'css';
+    case '// rust':
+    case '// rs':
+      return 'rust';
+    default:
+      return '';
+  }
+}
+
 export default {
   name: 'Terminal',
   props: {
@@ -21,6 +61,18 @@ export default {
       this.lines.push('');
       this.$forceUpdate();
     },
+  },
+  data() {
+    const lines = this.lines.slice(0, 15);
+    const lang = get_lang_by_shebang(this.shebang);
+    console.log(this.shebang,lang);
+    return {
+      hightlighted: lang ? lines.map(line => {
+        return hljs.highlight(line as string,
+          { language: lang }
+        ).value
+      }) : lines
+    };
   }
 }
 </script>
@@ -33,10 +85,10 @@ export default {
 
 
     <br>
-    <span v-for="line in lines.slice(0, 15)">
+    <span v-for="line in hightlighted">
       <!--<span class="green">~</span><span class="blue">❯&nbsp;</span>>-->
       
-      <span class="line">{{ line }}</span>
+      <span class="line" v-html="line"/>
       
       <br>
     </span>
@@ -75,7 +127,7 @@ export default {
   }
 
   .line {
-    color: var(--codeline-color);
+    // color: var(--codeline-color);
     white-space: pre;
     font-size: 15px;
     line-height: 1;
