@@ -65,7 +65,6 @@ export default {
   data() {
     const lines = this.lines.slice(0, 15);
     const lang = get_lang_by_shebang(this.shebang);
-    console.log(this.shebang,lang);
     return {
       hightlighted: lang ? lines.map(line => {
         return hljs.highlight(line as string,

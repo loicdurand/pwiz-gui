@@ -3,6 +3,46 @@ import { create } from '@tauri-apps/plugin-fs';
 import { save } from '@tauri-apps/plugin-dialog';
 import { Post } from '../interfaces';
 
+import hljs from 'highlight.js/lib/core';
+import javascript from 'highlight.js/lib/languages/javascript';
+import bash from 'highlight.js/lib/languages/bash';
+import php from 'highlight.js/lib/languages/php';
+import html from 'highlight.js/lib/languages/xml';
+import css from 'highlight.js/lib/languages/css';
+import rust from 'highlight.js/lib/languages/rust';
+import python from 'highlight.js/lib/languages/python';
+
+[javascript, bash, php, html, css, rust, python].forEach((lang) => {
+  hljs.registerLanguage(lang.name, lang);
+});
+
+function get_lang_by_shebang(shebang: string) {
+  if (shebang.startsWith('#!/usr/bin/env')) {
+    const [, lang] = shebang.split(/\s/).filter(Boolean);
+    return lang;
+  }else if (shebang.startsWith('&lt;html')) {
+    return 'xml';
+  }
+  switch (shebang) {
+    case '#!/bin/bash':
+    case '#!/bin/sh':
+      return 'bash';
+    case '&lt;?php':
+      return 'php';
+    case '// js':
+      return 'javascript';
+    case '&lt;!-- html --&gt;':
+      return 'xml';
+    case '// css':
+      return 'css';
+    case '// rust':
+    case '// rs':
+      return 'rust';
+    default:
+      return '';
+  }
+}
+
 export default {
   name: 'Viewer',
   props: {
@@ -16,8 +56,16 @@ export default {
     }
   },
   data() {
+    const post = this.editor.post as Post;
+    const lines = post.content;
+    const lang = get_lang_by_shebang(post.content_type);
     return {
-      post: this.editor.post as Post,
+      post,
+      hightlighted: lang ? lines.map(line => {
+        return hljs.highlight(line as string,
+          { language: lang }
+        ).value
+      }) : lines
     }
   },
   methods: {
@@ -154,7 +202,7 @@ export default {
     <pre>
     <p class="shebang" v-html="post.content_type" />
     <code>
-      <p v-for="line in post.content">{{ line || "\n" }}</p>
+      <p v-for="line in hightlighted" v-html="line"/>
     </code>
 </pre>
 
@@ -253,7 +301,7 @@ pre {
 
 code {
   background: var(--terminal-color);
-  color: var(--codeline-color);
+  // color: var(--codeline-color);
   padding: 0 3rem;
   margin: 1rem;
   position: relative;
@@ -264,8 +312,9 @@ code {
   transition: background 0.3s;
   outline: none;
   width: 100%;
-  max-width: 1000%;
+  max-width: 100%;
   min-height: calc(100vh - 135px);
+  overflow-x: scroll;
 
   & .controls {
     border: 1px solid var(--grey-5);
