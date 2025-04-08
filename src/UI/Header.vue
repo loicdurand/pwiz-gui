@@ -85,7 +85,7 @@ export default {
   top: 0;
   margin-left: -15px !important;
   z-index: 10000;
-  background: #fff;
+  background: rgba(255,255,255,.85);
   border-bottom: 1px solid var(--grey-3);
   box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.175);
 
