@@ -40,6 +40,9 @@ export default {
     goBack() {
       this.mode.affichage = false
     },
+    openModal() {
+      document?.getElementById('set-tags-modal')?.classList.add('visible');
+    },
     highlight(e: Event) {
       const target = e.currentTarget as HTMLTextAreaElement;
       const lines = target.value.split('\r\n');
@@ -117,7 +120,7 @@ export default {
         id: (id as HTMLInputElement)?.value,
         title: title?.innerHTML,
         content: (content as HTMLTextAreaElement)?.value,
-        contenttype: contenttype?.innerHTML || "sh",
+        contenttype: contenttype?.innerHTML || "",
         tags: tags.join(' ')
       };
 
@@ -209,10 +212,11 @@ export default {
 
     </div>
     <pre>
-    <p class="shebang" v-html="post.content_type" :contenteditable="editor.is_editable" title='Shebang pour ce script (ex: #!/bin/bash, mais aussi <?php, <html lang="fr">, etc...)'/>
+    <p class="shebang" id="post-contenttype" v-html="post.content_type" :contenteditable="editor.is_editable" title='Shebang pour ce script (ex: #!/bin/bash, mais aussi <?php, <html lang="fr">, etc...)'/>
     <code>
       <p v-for="line in hightlighted" v-html="line"/>
       <textarea 
+      id="post-content"
       v-if="editor.is_editable" 
       v-html='post.content.filter(Boolean).join("\r\n")'
       @keyup="highlight"
@@ -220,14 +224,25 @@ export default {
     </code>
 </pre>
 
-    là
+    <ul
+      v-if="editor.is_editable"
+      class="btns-group btns-group--inline"
+    >
+
+      <li class="right"><a
+          class="confirm open-modal"
+          role="button"
+          tabindex="0"
+          href="#"
+          @click="openModal"
+        >
+          Suivant
+        </a></li>
+    </ul>
 
   </div>
 
-  <Modal
-    id="set-tags-modal"
-    class="visible"
-  >
+  <Modal id="set-tags-modal">
     <TagsSelector :editor="editor" />
 
     <template v-slot:header>
@@ -244,6 +259,7 @@ export default {
             role="button"
             tabindex="0"
             href="#"
+            @click="submit"
           >
             Sauvegarder
           </a></li>
@@ -274,6 +290,7 @@ export default {
   border: 1px solid var(--grey-5);
   border-radius: 5px;
   padding: 3px;
+  min-width: 10ch;
 }
 
 .post-title {
@@ -416,5 +433,12 @@ code p::before {
   color: #50646d;
   content: counter(step);
   counter-increment: step;
+}
+
+ul.btns-group.btns-group--inline li [role=button].open-modal {
+  background-color: var(--blue-9);
+  color: #fff;
+  border: none;
+  margin: -24px 16px 0 0;
 }
 </style>
