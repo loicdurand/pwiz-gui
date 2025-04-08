@@ -1,6 +1,5 @@
 <script lang="ts">
 import SquareCard from './SquareCard.vue';
-import Editor from './Editor.vue';
 
 const menu_classes = 's4 m3 l2';
 
@@ -14,19 +13,10 @@ export default {
     editor: {
       type: Object,
       required: true
-    },
-    openEditor: {
-      type: Function as () => any,
-      required: true
-    },
-    closeEditor: {
-      type: Function as () => any,
-      required: true
     }
   },
   components: {
-    SquareCard,
-    Editor,
+    SquareCard
   },
   data() {
     return {
@@ -35,8 +25,22 @@ export default {
   },
   methods: {
     goBack() {
-      this.editor.open ? this.closeEditor(this.editor.post === null) : this.mode.edition = false
-    }
+      this.mode.edition = false
+      this.mode.affichage = false
+    },
+    openEditor() {
+      this.mode.edition = false
+      this.mode.affichage = true
+      this.editor.open = true
+      this.editor.post = {
+        id: null,
+        title: 'fichier.txt',
+        content: ["Votre contenu ici..."],
+        content_type: '',
+        tags: []
+      }
+      this.editor.is_editable = true
+    },
   }
 }
 </script>
@@ -61,12 +65,11 @@ export default {
       class="post-title"
       contenteditable="true"
     >
-      {{ editor.post===null? "script.sh":editor.post.title}}
+      {{ editor.post === null ? "script.sh" : editor.post.title }}
     </span>
   </p>
 
   <div
-    v-if="!editor.open"
     class="row app-list-of-articles mode-edition"
   >
 
@@ -144,26 +147,6 @@ export default {
     </div>
 
     <!-- suggestions: pdf, image, vidéo, etc... -->
-
-  </div>
-
-  <!-- ÉDITEUR OUVERT -->
-  <div
-    v-else
-    class="row app-list-of-articles mode-edition"
-  >
-
-    <Editor :post="editor.post">
-
-      <textarea
-
-        class="code-textarea"
-        id="post-content"
-        placeholder="Tapez votre contenu ici"
-        spellcheck="false"
-      >{{ editor.post===null?'':editor.post.content.join("\r\n") }}</textarea>
-
-    </Editor>
 
   </div>
 

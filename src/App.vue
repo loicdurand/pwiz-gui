@@ -49,23 +49,10 @@ async function delete_post(post: Post) {
   location.reload();
 }
 
-function openEditor(post: Post | null) {
-  mode.value.edition = true;
-  editor.value.open = true;
-  editor.value.type = "sh";
-  editor.value.post = post;
-}
-
-function openViewer(post: Post, is_editable:Boolean) {
+function openViewer(post: Post, is_editable: Boolean) {
   mode.value.affichage = true;
   editor.value.post = post;
   editor.value.is_editable = is_editable;
-}
-
-function closeEditor(mode_edition_value: boolean) {
-  mode.value.edition = mode_edition_value;
-  editor.value.open = false;
-  editor.value.type = "";
 }
 
 get_posts();
@@ -100,7 +87,7 @@ get_posts();
           <Card
             :post="post"
             :editor="editor"
-            :openEditor="() => openEditor(post)"
+            :openEditor="() => openViewer(post, true)"
           >
 
             <Terminal
@@ -125,10 +112,8 @@ get_posts();
   >
 
     <Menu
-      :mode="mode"
       :editor="editor"
-      :openEditor="() => openEditor(null)"
-      :closeEditor="closeEditor"
+      :mode="mode"
     />
 
   </main>

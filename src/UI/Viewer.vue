@@ -54,12 +54,10 @@ export default {
       }) : lines;
     },
     mode_edit() {
-      // this.mode.affichage = false;
-      // this.mode.edition = true;
-      // this.editor.open = true;
-      // this.editor.type = "sh";
-      // this.editor.post = this.post;
       this.editor.is_editable = true;
+    },
+    mode_lock() {
+      this.editor.is_editable = false;
     },
     recode(str: string): string {
       return str.replace(/&amp;|&lt;|&gt;|&quot;|&#039;/g, (m: string) => {
@@ -162,7 +160,20 @@ export default {
     <div class="controls">
       <div class="infos">{{ post.content.length }} lignes - {{ post.content.filter(Boolean).length }} non vides</div>
       <ul>
-        <li>
+        <li v-if="editor.is_editable">
+          <span
+            role="button"
+            tabindex="0"
+            class="icon-button download-button pointer"
+            @click="mode_lock"
+          >
+            <i
+              class="material-icons"
+              title="Verrouiller en édition"
+            >lock</i>
+          </span>
+        </li>
+        <li v-else>
           <span
             role="button"
             tabindex="0"
@@ -358,6 +369,9 @@ pre {
     font-size: 0.75rem;
     z-index: 1;
     left: 40px;
+    &:empty:before{
+      content:'shebang?';
+    }
   }
 }
 
@@ -377,6 +391,9 @@ code {
   max-width: 100%;
   min-height: calc(100vh - 135px);
   overflow-x: scroll;
+  &:empty:before{
+      content:'shebang?';
+    }
 
   & .controls {
     border: 1px solid var(--grey-5);
