@@ -40,141 +40,159 @@ export default {
 </script>
 
 <template>
-  <header class="app-header">
-    <div class="app-search-wrap">
-      <div class="search">
-        <input
-          type="text"
-          id="search-term"
-          class="search-term"
-          placeholder="Termes à rechercher"
-        >
-        <button
-          type="submit"
-          class="search-button"
-        >
-          <i class="material-icons">search</i>
-        </button>
-      </div>
+  <div class="container">
+    <div>
+      <header class="app-header">
+        <div class="app-search-wrap">
+          <div class="search">
+            <input
+              type="text"
+              id="search-term"
+              class="search-term"
+              placeholder="Termes à rechercher"
+            >
+            <button
+              type="submit"
+              class="search-button"
+            >
+              <i class="material-icons">search</i>
+            </button>
+          </div>
+        </div>
+        <nav class="app-nav-wrap row">
+          <ul>
+            <li>
+              <button
+                type="button"
+                class="icon-button col app-nav-button"
+                @click="create_post"
+              >
+                <i class="material-icons">add</i>
+                <span class="button-text">Ajouter une fiche</span>
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </header>
     </div>
-    <nav class="app-nav-wrap row">
-      <ul>
-        <li>
-          <button
-            type="button"
-            class="icon-button col app-nav-button"
-            @click="create_post"
-          >
-            <i class="material-icons">add</i>
-            <span class="button-text">Ajouter une fiche</span>
-          </button>
-        </li>
-      </ul>
-    </nav>
-  </header>
+  </div>
 
 </template>
 
 <style lang="scss" scoped>
-.app-header {
-  position: absolute;
+.container {
+  position: fixed !important;
   top: 0;
-  margin: 0 auto;
-  height: 90px;
-  width: 100%;
+  margin-left: -15px !important;
+  z-index: 10000;
+  background: #fff;
   border-bottom: 1px solid var(--grey-3);
+  box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.175);
 
-  // SEARCH
-  & .app-search-wrap {
-    width: 70%;
-    position: absolute;
-    top: 6px;
-    left: 15%;
-
-    & .search {
-      width: 100%;
-      position: relative;
-      display: flex;
-    }
-
-    & .search-term {
-      width: 100%;
-      border: 2px solid var(--theme-color);
-      border-right: none;
-      padding: 5px;
-      height: 36px;
-      border-radius: 5px 0 0 5px;
-      outline: none;
-      color: var(--input-color);
-
-      &::placeholder {
-        text-align: center;
-      }
-
-      &:focus {
-        color: var(--theme-color);
-      }
-    }
-
-    & .search-button {
-      width: 36px;
-      height: 36px;
-      border: 1px solid var(--theme-color);
-      background: var(--theme-color);
-      text-align: center;
-      color: #fff;
-      border-radius: 0 5px 5px 0;
-      cursor: pointer;
-      font-size: 20px;
-    }
-  }
-
-  & .app-nav-wrap {
-    position: fixed;
+  &>div {
+    position: relative;
+    margin: 0;
+    padding: 0;
     width: 100%;
-    top: 50px;
-    height: 30px;
-
-    & ul li {
-      list-style-type: none;
-      padding: 0;
-      position: relative;
-
-      & .app-nav-button {
-        padding: 0;
-        margin: -16px 6px 0 -40px;
-        height: 30px;
-        max-height: 30px;
-        position: relative;
-        cursor: initial;
-
-        &:not(:disabled) {
-          cursor: pointer;
-
-          &:hover,
-          &:hover span {
-            font-weight: 700;
-          }
-        }
-
-        &.icon-button {
-          background: none;
-          border: none;
-          cursor: pointer;
-
-          & .button-text {
-            position: absolute;
-            width: 150px;
-            height: 30px;
-            padding-top: 5px;
-            text-align: left;
-          }
-        }
-
-      }
-    }
+    height: 90px;
   }
 
-  // fin SEARCH
+  .app-header {
+    position: relative;
+    width: 100%;
+
+    // SEARCH
+    & .app-search-wrap {
+      width: 70%;
+      position: absolute;
+      top: 6px;
+      left: 15%;
+
+      & .search {
+        width: 100%;
+        position: relative;
+        display: flex;
+      }
+
+      & .search-term {
+        width: 100%;
+        border: 2px solid var(--theme-color);
+        border-right: none;
+        padding: 5px;
+        height: 36px;
+        border-radius: 5px 0 0 5px;
+        outline: none;
+        color: var(--input-color);
+
+        &::placeholder {
+          text-align: center;
+        }
+
+        &:focus {
+          color: var(--theme-color);
+        }
+      }
+
+      & .search-button {
+        width: 36px;
+        height: 36px;
+        border: 1px solid var(--theme-color);
+        background: var(--theme-color);
+        text-align: center;
+        color: #fff;
+        border-radius: 0 5px 5px 0;
+        cursor: pointer;
+        font-size: 20px;
+      }
+    }
+
+    & .app-nav-wrap {
+      position: absolute;
+      width: 100%;
+      top: 50px;
+      height: 30px;
+
+      & ul li {
+        list-style-type: none;
+        padding: 0;
+        position: relative;
+
+        & .app-nav-button {
+          padding: 0;
+          margin: -16px 6px 0 -40px;
+          height: 30px;
+          max-height: 30px;
+          position: relative;
+          cursor: initial;
+
+          &:not(:disabled) {
+            cursor: pointer;
+
+            &:hover,
+            &:hover span {
+              font-weight: 700;
+            }
+          }
+
+          &.icon-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+
+            & .button-text {
+              position: absolute;
+              width: 150px;
+              height: 30px;
+              padding-top: 5px;
+              text-align: left;
+            }
+          }
+
+        }
+      }
+    }
+
+    // fin SEARCH
+  }
 }
 </style>

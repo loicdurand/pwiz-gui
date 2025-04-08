@@ -28,15 +28,15 @@ export default {
       this.mode.edition = false
       this.mode.affichage = false
     },
-    openEditor() {
+    openEditor(extension: string) {
       this.mode.edition = false
       this.mode.affichage = true
       this.editor.open = true
       this.editor.post = {
         id: null,
-        title: 'fichier.txt',
+        title: 'mon_fichier.' + extension,
         content: ["Votre contenu ici..."],
-        content_type: '',
+        content_type: extension === 'sh' ? '#!/bin/bash' : '',
         tags: []
       }
       this.editor.is_editable = true
@@ -69,9 +69,7 @@ export default {
     </span>
   </p>
 
-  <div
-    class="row app-list-of-articles mode-edition"
-  >
+  <div class="row app-list-of-articles mode-edition">
 
     <div
       class="col"
@@ -80,7 +78,7 @@ export default {
       <SquareCard
         logo="sh"
         title="script"
-        @click="openEditor"
+        @click="() => openEditor('sh')"
       >
         <img src="../assets/icons/shell.png">
       </SquareCard>
