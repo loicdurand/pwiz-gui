@@ -1,23 +1,11 @@
 <script lang="ts">
 import { create } from '@tauri-apps/plugin-fs';
 import { save, message } from '@tauri-apps/plugin-dialog';
-import { time_format,shebang_to_type } from '../utils';
+import { time_format, shebang_to_type } from '../utils';
 
 import { Post } from '../interfaces';
 import Tag from './Tag.vue';
 import { get_lang_by_shebang } from '../hljs_init';
-
-function recode(str: string): string {
-  return str.replace(/&amp;|&lt;|&gt;|&quot;|&#039;/g, (m: string) => {
-    return ({
-      '&amp;': '&',
-      '&lt;': '<',
-      '&gt;': '>',
-      '&quot;': '"',
-      '&#039;': "'"
-    })[m] || m;
-  });
-}
 
 function fadeOut(target: HTMLElement) {
   const fadeTarget = target.querySelector('.copied') as HTMLElement | null;
@@ -55,7 +43,17 @@ export default {
     }
   },
   methods: {
-    recode,
+    recode(str: string): string {
+      return str.replace(/&amp;|&lt;|&gt;|&quot;|&#039;/g, (m: string) => {
+        return ({
+          '&amp;': '&',
+          '&lt;': '<',
+          '&gt;': '>',
+          '&quot;': '"',
+          '&#039;': "'"
+        })[m] || m;
+      });
+    },
     async download(data: string) {
       const path = await save();
       if (path) {
@@ -77,7 +75,7 @@ export default {
         Taille: ${size}B
         Langage: ${lang || 'non défini'}
       `;
-      
+
       await message(message_content, post.title);
     },
     copy_to_clipboard(e: Event): void {

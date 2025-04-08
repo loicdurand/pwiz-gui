@@ -91,6 +91,14 @@ ul.btns-group.btns-group--inline {
         list-style-type: none;
         display: inline-block;
 
+        &.left {
+            float: left;
+        }
+
+        &.right {
+            float: right;
+        }
+
         & button,
         & [role="button"] {
             background: transparent;
@@ -103,6 +111,12 @@ ul.btns-group.btns-group--inline {
             transition: background 0.3s;
             float: left;
             color: inherit;
+
+            &.confirm {
+                background-color: var(--blue-9);
+                color: #fff;
+                border: none;
+            }
 
             &.abort {
                 background-color: var(--grey-3);

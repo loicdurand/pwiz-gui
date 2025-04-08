@@ -22,10 +22,12 @@ const editor = ref<{
   open: boolean;
   type: string;
   post: Post | null;
+  is_editable: Boolean;
 }>({
   open: false,
   type: "",
-  post: null
+  post: null,
+  is_editable: false
 });
 
 async function get_posts() {
@@ -47,22 +49,10 @@ async function delete_post(post: Post) {
   location.reload();
 }
 
-function openEditor(post: Post | null) {
-  mode.value.edition = true;
-  editor.value.open = true;
-  editor.value.type = "sh";
-  editor.value.post = post;
-}
-
-function openViewer(post: Post) {
+function openViewer(post: Post, is_editable: Boolean) {
   mode.value.affichage = true;
   editor.value.post = post;
-}
-
-function closeEditor(mode_edition_value: boolean) {
-  mode.value.edition = mode_edition_value;
-  editor.value.open = false;
-  editor.value.type = "";
+  editor.value.is_editable = is_editable;
 }
 
 get_posts();
@@ -97,13 +87,13 @@ get_posts();
           <Card
             :post="post"
             :editor="editor"
-            :openEditor="() => openEditor(post)"
+            :openEditor="() => openViewer(post, true)"
           >
 
             <Terminal
               :shebang="post.content_type"
               :lines="post.content"
-              @click="() => openViewer(post)"
+              @click="() => openViewer(post, false)"
             />
 
           </Card>
@@ -122,10 +112,8 @@ get_posts();
   >
 
     <Menu
-      :mode="mode"
       :editor="editor"
-      :openEditor="() => openEditor(null)"
-      :closeEditor="closeEditor"
+      :mode="mode"
     />
 
   </main>

@@ -1,11 +1,18 @@
 <script lang="ts">
+import { invoke } from "@tauri-apps/api/core";
 import { create } from '@tauri-apps/plugin-fs';
 import { save } from '@tauri-apps/plugin-dialog';
 import { Post } from '../interfaces';
-import { hljs,get_lang_by_shebang } from '../hljs_init';
+import { hljs, get_lang_by_shebang } from '../hljs_init';
+import Modal from "./Modal.vue";
+import TagsSelector from "./TagsSelector.vue";
 
 export default {
   name: 'Viewer',
+  components: {
+    Modal,
+    TagsSelector
+  },
   props: {
     mode: {
       type: Object,
@@ -33,12 +40,24 @@ export default {
     goBack() {
       this.mode.affichage = false
     },
+    openModal() {
+      document?.getElementById('set-tags-modal')?.classList.add('visible');
+    },
+    highlight(e: Event) {
+      const target = e.currentTarget as HTMLTextAreaElement;
+      const lines = target.value.split('\r\n');
+      const lang = get_lang_by_shebang(this.post.content_type);
+      this.hightlighted = lang ? lines.map(line => {
+        return hljs.highlight(line as string,
+          { language: lang }
+        ).value
+      }) : lines;
+    },
     mode_edit() {
-      this.mode.affichage = false;
-      this.mode.edition = true;
-      this.editor.open = true;
-      this.editor.type = "sh";
-      this.editor.post = this.post;
+      this.editor.is_editable = true;
+    },
+    mode_lock() {
+      this.editor.is_editable = false;
     },
     recode(str: string): string {
       return str.replace(/&amp;|&lt;|&gt;|&quot;|&#039;/g, (m: string) => {
@@ -84,6 +103,30 @@ export default {
           }
         }, 100);
       }
+    },
+    async submit() {
+      // recuil des valeurs de base
+      const id: HTMLElement | null = document.getElementById('post-id');
+      const title: HTMLElement | null = document.getElementById('post-title');
+      const content: HTMLElement | null = document.getElementById('post-content');
+      const contenttype: HTMLElement | null = document.getElementById('post-contenttype');
+
+      // recueil des tags
+      const chips = document.querySelectorAll(".chip--text");
+      const tags = chips ? [...chips].map(chip => chip.innerHTML) : [];
+      const post = {
+        id: (id as HTMLInputElement)?.value,
+        title: title?.innerHTML,
+        content: (content as HTMLTextAreaElement)?.value,
+        contenttype: contenttype?.innerHTML || "",
+        tags: tags.join(' ')
+      };
+
+      if (!post.id)
+        await invoke('insert_post', post);
+      else
+        await invoke('update_post', post);
+      location.reload();
     }
 
   }
@@ -100,8 +143,14 @@ export default {
     <span>Retour</span>
   </button>
 
+  <input
+    type="hidden"
+    id="post-id"
+    :value="post === null ? '' : post.id"
+  >
+
   <p
-    contenteditable="false"
+    :contenteditable="editor.is_editable"
     class="post-title"
     id="post-title"
   >
@@ -111,7 +160,20 @@ export default {
     <div class="controls">
       <div class="infos">{{ post.content.length }} lignes - {{ post.content.filter(Boolean).length }} non vides</div>
       <ul>
-        <li>
+        <li v-if="editor.is_editable">
+          <span
+            role="button"
+            tabindex="0"
+            class="icon-button download-button pointer"
+            @click="mode_lock"
+          >
+            <i
+              class="material-icons"
+              title="Verrouiller en édition"
+            >lock</i>
+          </span>
+        </li>
+        <li v-else>
           <span
             role="button"
             tabindex="0"
@@ -161,13 +223,60 @@ export default {
 
     </div>
     <pre>
-    <p class="shebang" v-html="post.content_type" />
+    <p class="shebang" id="post-contenttype" v-html="post.content_type" :contenteditable="editor.is_editable" title='Shebang pour ce script (ex: #!/bin/bash, mais aussi <?php, <html lang="fr">, etc...)'/>
     <code>
       <p v-for="line in hightlighted" v-html="line"/>
+      <textarea 
+      id="post-content"
+      v-if="editor.is_editable" 
+      v-html='post.content.filter(Boolean).join("\r\n")'
+      @keyup="highlight"
+       />
     </code>
 </pre>
 
+    <ul
+      v-if="editor.is_editable"
+      class="btns-group btns-group--inline"
+    >
+
+      <li class="right"><a
+          class="confirm open-modal"
+          role="button"
+          tabindex="0"
+          href="#"
+          @click="openModal"
+        >
+          Suivant
+        </a></li>
+    </ul>
+
   </div>
+
+  <Modal id="set-tags-modal">
+    <TagsSelector :editor="editor" />
+
+    <template v-slot:header>
+      <h3>
+        Termes de recherche
+      </h3>
+    </template>
+
+    <template v-slot:footer>
+      <ul class="btns-group btns-group--inline">
+
+        <li><a
+            class="confirm"
+            role="button"
+            tabindex="0"
+            href="#"
+            @click="submit"
+          >
+            Sauvegarder
+          </a></li>
+      </ul>
+    </template>
+  </Modal>
 
 </template>
 
@@ -188,13 +297,16 @@ export default {
   }
 }
 
+[contenteditable="true"] {
+  border: 1px solid var(--grey-5);
+  border-radius: 5px;
+  padding: 3px;
+  min-width: 10ch;
+}
+
 .post-title {
   width: 100px;
   margin: 0 auto;
-
-  &[contenteditable="true"] {
-    border: 1px dotted var(--grey-4);
-  }
 }
 
 .editor {
@@ -257,13 +369,16 @@ pre {
     font-size: 0.75rem;
     z-index: 1;
     left: 40px;
+    &:empty:before{
+      content:'shebang?';
+    }
   }
 }
 
 code {
   background: var(--terminal-color);
   color: var(--codeline-color);
-  padding: 0 3rem;
+  padding: 24px 3rem;
   margin: 1rem;
   position: relative;
   border-bottom-left-radius: 5px; // 0.25rem;
@@ -276,6 +391,9 @@ code {
   max-width: 100%;
   min-height: calc(100vh - 135px);
   overflow-x: scroll;
+  &:empty:before{
+      content:'shebang?';
+    }
 
   & .controls {
     border: 1px solid var(--grey-5);
@@ -293,16 +411,36 @@ code {
   }
 }
 
+textarea {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  white-space: pre;
+  text-align: left;
+  line-height: 24px;
+  padding: 71px 47px;
+  color: transparent;
+  font-size: 15px;
+  font-family: monospace;
+  caret-color: #fff;
+}
+
 code:focus {
   background: #2e3d44;
 }
 
 code p {
   position: relative;
-  margin: 0.2rem;
+  margin: 0;
   display: block;
   white-space: pre;
   text-align: left;
+  line-height: 24px;
+  font-size: 15px;
+  font-family: monospace;
 }
 
 code p::before {
@@ -312,5 +450,12 @@ code p::before {
   color: #50646d;
   content: counter(step);
   counter-increment: step;
+}
+
+ul.btns-group.btns-group--inline li [role=button].open-modal {
+  background-color: var(--blue-9);
+  color: #fff;
+  border: none;
+  margin: -24px 16px 0 0;
 }
 </style>
