@@ -1,11 +1,18 @@
 <script lang="ts">
+import { invoke } from "@tauri-apps/api/core";
 import { create } from '@tauri-apps/plugin-fs';
 import { save } from '@tauri-apps/plugin-dialog';
 import { Post } from '../interfaces';
 import { hljs, get_lang_by_shebang } from '../hljs_init';
+import Modal from "./Modal.vue";
+import TagsSelector from "./TagsSelector.vue";
 
 export default {
   name: 'Viewer',
+  components: {
+    Modal,
+    TagsSelector
+  },
   props: {
     mode: {
       type: Object,
@@ -95,6 +102,30 @@ export default {
           }
         }, 100);
       }
+    },
+    async submit() {
+      // recuil des valeurs de base
+      const id: HTMLElement | null = document.getElementById('post-id');
+      const title: HTMLElement | null = document.getElementById('post-title');
+      const content: HTMLElement | null = document.getElementById('post-content');
+      const contenttype: HTMLElement | null = document.getElementById('post-contenttype');
+
+      // recueil des tags
+      const chips = document.querySelectorAll(".chip--text");
+      const tags = chips ? [...chips].map(chip => chip.innerHTML) : [];
+      const post = {
+        id: (id as HTMLInputElement)?.value,
+        title: title?.innerHTML,
+        content: (content as HTMLTextAreaElement)?.value,
+        contenttype: contenttype?.innerHTML || "sh",
+        tags: tags.join(' ')
+      };
+
+      if (!post.id)
+        await invoke('insert_post', post);
+      else
+        await invoke('update_post', post);
+      location.reload();
     }
 
   }
@@ -110,6 +141,12 @@ export default {
     <i class="material-icons">arrow_back</i>
     <span>Retour</span>
   </button>
+
+  <input
+    type="hidden"
+    id="post-id"
+    :value="post === null ? '' : post.id"
+  >
 
   <p
     :contenteditable="editor.is_editable"
@@ -183,7 +220,36 @@ export default {
     </code>
 </pre>
 
+    là
+
   </div>
+
+  <Modal
+    id="set-tags-modal"
+    class="visible"
+  >
+    <TagsSelector :editor="editor" />
+
+    <template v-slot:header>
+      <h3>
+        Termes de recherche
+      </h3>
+    </template>
+
+    <template v-slot:footer>
+      <ul class="btns-group btns-group--inline">
+
+        <li><a
+            class="confirm"
+            role="button"
+            tabindex="0"
+            href="#"
+          >
+            Sauvegarder
+          </a></li>
+      </ul>
+    </template>
+  </Modal>
 
 </template>
 

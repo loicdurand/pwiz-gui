@@ -104,6 +104,12 @@ ul.btns-group.btns-group--inline {
             float: left;
             color: inherit;
 
+            &.confirm {
+                background-color: var(--blue-9);
+                color:#fff;
+                border: none;
+            }
+
             &.abort {
                 background-color: var(--grey-3);
                 border: none;
