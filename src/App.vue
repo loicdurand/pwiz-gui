@@ -22,10 +22,12 @@ const editor = ref<{
   open: boolean;
   type: string;
   post: Post | null;
+  is_editable: Boolean;
 }>({
   open: false,
   type: "",
-  post: null
+  post: null,
+  is_editable: false
 });
 
 async function get_posts() {
@@ -54,9 +56,10 @@ function openEditor(post: Post | null) {
   editor.value.post = post;
 }
 
-function openViewer(post: Post) {
+function openViewer(post: Post, is_editable:Boolean) {
   mode.value.affichage = true;
   editor.value.post = post;
+  editor.value.is_editable = is_editable;
 }
 
 function closeEditor(mode_edition_value: boolean) {
@@ -103,7 +106,7 @@ get_posts();
             <Terminal
               :shebang="post.content_type"
               :lines="post.content"
-              @click="() => openViewer(post)"
+              @click="() => openViewer(post, false)"
             />
 
           </Card>
