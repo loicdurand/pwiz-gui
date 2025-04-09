@@ -25,21 +25,21 @@ export default {
   },
   methods: {
     goBack() {
-      this.mode.edition = false
-      this.mode.affichage = false
+      this.mode.edition = false;
+      this.mode.affichage = false;
     },
     openEditor(extension: string) {
-      this.mode.edition = false
-      this.mode.affichage = true
-      this.editor.open = true
+      this.mode.edition = false;
+      this.mode.affichage = true;
+      this.editor.open = true;
       this.editor.post = {
         id: null,
         title: 'mon_fichier.' + extension,
         content: ["Votre contenu ici..."],
         content_type: extension === 'sh' ? '#!/bin/bash' : '',
         tags: []
-      }
-      this.editor.is_editable = true
+      };
+      this.editor.is_editable = true;
     },
   }
 }

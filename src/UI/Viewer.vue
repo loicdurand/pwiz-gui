@@ -46,7 +46,8 @@ export default {
     highlight(e: Event) {
       const target = e.currentTarget as HTMLTextAreaElement;
       const lines = target.value.split("\n");
-      const lang = get_lang_by_shebang(this.post.content_type);
+      const shebang = document.getElementById('post-contenttype') as HTMLParagraphElement;
+      const lang = get_lang_by_shebang(shebang.innerHTML.trim());
       this.hightlighted = lang ? lines.map(line => {
         return hljs.highlight(line as string,
           { language: lang }
