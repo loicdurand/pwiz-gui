@@ -1,70 +1,110 @@
 <script lang="ts">
-
-import { Post } from '../interfaces';
 import { invoke } from "@tauri-apps/api/core";
-
-function removeTag(e: Event): void {
-  const target = e.currentTarget as HTMLElement;
-  const parent = target.parentElement;
-  if (parent)
-    parent.outerHTML = '';
-}
-
-function enable_tags() {
-  const input: HTMLInputElement | null = document.querySelector(".chip-input");
-  const chips: HTMLElement | null = document.querySelector(".chips");
-
-  if (input === null)
-    return;
-
-  document.querySelector(".form-field")?.addEventListener('click', () => {
-    input.focus();
-  });
-
-  input.addEventListener('keydown', function (event: KeyboardEvent) {
-
-    if (event.key === 'Enter') {
-
-      chips?.appendChild(function () {
-        const _chip = document.createElement('div');
-
-        _chip.classList.add('chip');
-
-        _chip.append(
-          (function () {
-            const _chip_text = document.createElement('span');
-            _chip_text.classList.add('chip--text');
-            _chip_text.innerHTML = input.value;
-
-            return _chip_text;
-          })(),
-          (function () {
-            const _chip_button = document.createElement('span');
-            _chip_button.classList.add('chip--button');
-            _chip_button.innerHTML = '×';
-            _chip_button.addEventListener('click', removeTag);
-
-            return _chip_button;
-          })()
-        );
-
-        return _chip;
-      }());
-      input.value = '';
-    }
-  });
-}
+import { create } from '@tauri-apps/plugin-fs';
+import { save } from '@tauri-apps/plugin-dialog';
+import { Post } from '../interfaces';
+import { hljs, get_lang_by_shebang } from '../hljs_init';
+import Modal from "./Modal.vue";
+import TagsSelector from "./TagsSelector.vue";
 
 export default {
   name: 'Editor',
+  components: {
+    Modal,
+    TagsSelector
+  },
   props: {
-    post: {
-      type: {} as Post | null,
+    mode: {
+      type: Object,
+      required: true
+    },
+    editor: {
+      type: Object,
       required: true
     }
   },
+  data() {
+    const post = this.editor.post as Post;
+    const lines = post.content;
+    const lang = get_lang_by_shebang(post.content_type);
+    return {
+      post,
+      hightlighted: lang ? lines.map(line => {
+        return hljs.highlight(line as string,
+          { language: lang }
+        ).value
+      }) : lines
+    }
+  },
   methods: {
-    removeTag,
+    goBack() {
+      this.mode.affichage = false
+    },
+    openModal() {
+      document?.getElementById('set-tags-modal')?.classList.add('visible');
+    },
+    highlight(e: Event) {
+      const target = e.currentTarget as HTMLTextAreaElement;
+      const lines = target.value.split("\n");
+      const shebang = document.getElementById('post-contenttype') as HTMLParagraphElement;
+      const lang = get_lang_by_shebang(shebang.innerHTML.trim());
+      this.hightlighted = lang ? lines.map(line => {
+        return hljs.highlight(line as string,
+          { language: lang }
+        ).value || "\n"
+      }) : lines;
+    },
+    mode_edit() {
+      this.editor.is_editable = true;
+    },
+    mode_lock() {
+      this.editor.is_editable = false;
+    },
+    recode(str: string): string {
+      return str.replace(/&amp;|&lt;|&gt;|&quot;|&#039;/g, (m: string) => {
+        return ({
+          '&amp;': '&',
+          '&lt;': '<',
+          '&gt;': '>',
+          '&quot;': '"',
+          '&#039;': "'"
+        })[m] || m;
+      });
+    },
+    async download(data: string) {
+      const path = await save();
+      if (path) {
+        const file = await create(path);
+        await file.write(new TextEncoder().encode(data));
+        await file.close();
+      }
+    },
+    copy_to_clipboard(e: Event): void {
+      const target = e.currentTarget as HTMLElement;
+      const content = target?.dataset.content || '';
+      navigator.clipboard.writeText(content);
+      fadeOut(target);
+
+      function fadeOut(target: HTMLElement) {
+        const fadeTarget = target.querySelector('.copied') as HTMLElement | null;
+        if (!fadeTarget)
+          return;
+
+        fadeTarget.style.display = "inline";
+        const fadeEffect = setInterval(function () {
+          if (fadeTarget && !fadeTarget.style.opacity) {
+            fadeTarget.style.opacity = '1';
+          }
+          if (fadeTarget && parseFloat(fadeTarget.style.opacity) > 0) {
+            fadeTarget.style.opacity = (parseFloat(fadeTarget.style.opacity) - 0.1).toString();
+          } else if (fadeTarget) {
+            clearInterval(fadeEffect);
+            fadeTarget.style.display = "none";
+            fadeTarget.style.opacity = '1';
+          }
+        }, 100);
+      }
+    },
     async submit() {
       // recuil des valeurs de base
       const id: HTMLElement | null = document.getElementById('post-id');
@@ -79,7 +119,7 @@ export default {
         id: (id as HTMLInputElement)?.value,
         title: title?.innerHTML,
         content: (content as HTMLTextAreaElement)?.value,
-        contenttype: contenttype?.innerHTML || "sh",
+        contenttype: contenttype?.innerHTML || "",
         tags: tags.join(' ')
       };
 
@@ -90,14 +130,19 @@ export default {
       location.reload();
     }
 
-  },
-  mounted() {
-    enable_tags();
   }
 }
 </script>
 
 <template>
+  <button
+    type="button"
+    class="button back-button"
+    @click="goBack"
+  >
+    <i class="material-icons">arrow_back</i>
+    <span>Retour</span>
+  </button>
 
   <input
     type="hidden"
@@ -105,300 +150,313 @@ export default {
     :value="post === null ? '' : post.id"
   >
 
-  <article class="app-editor editable">
-    <div class="card-preview">
-
-      <div class="card-window">
-
-        <div
-          class="shebang"
-          id="post-contenttype"
-          contenteditable="true"
-          v-html="post === null ? '#!/bin/sh' : post.content_type"
-        />
-
-        <slot></slot>
-
-      </div>
-    </div>
-    <div class="card-content">
-
-      <div class="form-field">
-        <div
-          v-if="post === null"
-          class="chips"
-        >
-        </div>
-        <div
-          v-else
-          class="chips"
-        >
-          <div
-            class="chip"
-            v-for="tag in post.tags.filter(Boolean)"
+  <p
+    :contenteditable="editor.is_editable"
+    class="post-title"
+    id="post-title"
+  >
+    {{ post.title }}
+  </p>
+  <div class="editor">
+    <div class="controls">
+      <div class="infos">{{ post.content.length }} lignes - {{ post.content.filter(Boolean).length }} non vides</div>
+      <ul>
+        <li v-if="editor.is_editable">
+          <span
+            role="button"
+            tabindex="0"
+            class="icon-button download-button pointer"
+            @click="mode_lock"
           >
-            <span class="chip--text">{{ tag }}</span>
-            <span
-              class="chip--button"
-              @click="removeTag"
-            >×</span>
-          </div>
-        </div>
-        <label for="chip-input">
-          Tags permettant de trouver cette fiche: [ ENTRER ] pour valider
-        </label>
-        <input
-          name="chip-input"
-          autofocus
-          autocomplete="off"
-          class="chip-input"
-        />
-      </div>
+            <i
+              class="material-icons"
+              title="Verrouiller en édition"
+            >lock</i>
+          </span>
+        </li>
+        <li v-else>
+          <span
+            role="button"
+            tabindex="0"
+            class="icon-button download-button pointer"
+            :data-content='post.content.join("\r\n")'
+            @click="mode_edit"
+          >
+            <i
+              class="material-icons"
+              title="Modifier"
+            >mode_edit</i>
+          </span>
+        </li>
+
+        <li>
+          <span
+            role="button"
+            tabindex="0"
+            class="icon-button download-button pointer"
+            :data-content='post.content.join("\r\n")'
+            @click='download([recode(post.content_type), ...post.content].join("\r\n"))'
+          >
+            <i
+              class="material-icons"
+              title="Télécharger"
+            >vertical_align_bottom</i>
+          </span>
+        </li>
+        <li>
+          <span
+            role="button"
+            tabindex="0"
+            class="icon-button copy-button pointer"
+            :data-content='post.content.join("\r\n")'
+            @click="copy_to_clipboard"
+          >
+            <span class="copied">Copié!</span>
+            <i
+              class="material-icons"
+              title="Copier"
+            >content_copy</i>
+          </span>
+        </li>
+
+
+      </ul>
 
     </div>
-    <footer class="card-footer">
-      <button
-        type="button"
-        @click="submit"
-      >
-        Valider
-      </button>
-    </footer>
-  </article>
+    <pre>
+    <p class="shebang" id="post-contenttype" v-html="post.content_type" :contenteditable="editor.is_editable" title='Shebang pour ce script (ex: #!/bin/bash, mais aussi <?php, <html lang="fr">, etc...)'/>
+    <code>
+      <p v-for="line in hightlighted" v-html="line"/>
+      <textarea 
+      id="post-content"
+      v-if="editor.is_editable" 
+      v-html='post.content.filter(Boolean).join("\r\n")'
+      @keyup="highlight"
+       />
+    </code>
+</pre>
+
+    <ul
+      v-if="editor.is_editable"
+      class="btns-group btns-group--inline"
+    >
+
+      <li class="right"><a
+          class="confirm open-modal"
+          role="button"
+          tabindex="0"
+          href="#"
+          @click="openModal"
+        >
+          Suivant
+        </a></li>
+    </ul>
+
+  </div>
+
+  <Modal id="set-tags-modal">
+    <TagsSelector :editor="editor" />
+
+    <template v-slot:header>
+      <h3>
+        Termes de recherche
+      </h3>
+    </template>
+
+    <template v-slot:footer>
+      <ul class="btns-group btns-group--inline">
+
+        <li><a
+            class="confirm"
+            role="button"
+            tabindex="0"
+            href="#"
+            @click="submit"
+          >
+            Sauvegarder
+          </a></li>
+      </ul>
+    </template>
+  </Modal>
 
 </template>
 
-<style lang="scss">
-.app-editor {
+<style lang="scss" scoped>
+.button.back-button {
+  background: transparent;
+  border: 1px solid var(--grey-5);
+  position: absolute;
+  top: -4px;
+
+  &:hover {
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.175);
+  }
+
+  & .material-icons {
+    font-size: 14px;
+    margin-right: 6px;
+  }
+}
+
+[contenteditable="true"] {
+  border: 1px solid var(--grey-5);
+  border-radius: 5px;
+  padding: 3px;
+  min-width: 10ch;
+}
+
+.post-title {
+  min-width: 100px;
+  margin: 0 auto;
+}
+
+.editor {
+  margin: 0;
+  padding: 0;
+
+  .controls {
+    border: 1px solid var(--grey-5);
+    height: 40px;
+    margin: 35px 16px -51px 16px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    position: relative;
+    color: var(--grey-7);
+
+    & .infos {
+      height: 100%;
+      line-height: 41px;
+      display: inline;
+    }
+
+    & ul {
+      margin: 0;
+      padding: 0;
+      position: absolute;
+      top: .5rem;
+      right: .5rem;
+      list-style: none;
+
+      & li {
+        display: inline-block;
+        margin-right: .5rem;
+
+        & .copied {
+          display: none;
+          position: absolute;
+          right: -6px;
+          top: -33px;
+          background-color: rgba(255, 255, 255, .15);
+          padding: 3px;
+        }
+
+      }
+    }
+  }
+}
+
+pre {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 35px 0;
+  position: relative;
+
+  & .shebang {
+    position: absolute;
+    top: 35px;
+    color: var(--grey-5);
+    font-style: italic;
+    font-size: 0.75rem;
+    z-index: 1;
+    left: 40px;
+    &:empty:before{
+      content:'shebang?';
+    }
+  }
+}
+
+code {
+  background: var(--terminal-color);
+  color: var(--codeline-color);
+  padding: 24px 3rem;
+  margin: 1rem;
+  position: relative;
+  border-bottom-left-radius: 5px; // 0.25rem;
+  border-bottom-right-radius: 5px; // 0.25rem;
+  counter-reset: step;
+  counter-increment: step 0;
+  transition: background 0.3s;
+  outline: none;
+  width: 100%;
+  max-width: 100%;
+  min-height: calc(100vh - 135px);
+  overflow-x: scroll;
+  &:empty:before{
+      content:'shebang?';
+    }
+
+  & .controls {
+    border: 1px solid var(--grey-5);
+    position: absolute;
+    top: -1.5rem;
+    left: 0;
+    width: 100%;
+    height: 1.5rem;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+
+    &>div {
+      position: relative;
+    }
+  }
+}
+
+textarea {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  background: white;
-  display: inline-block;
+  background-color: transparent;
+  white-space: pre;
+  text-align: left;
+  line-height: 24px;
+  padding: 71px 47px;
+  color: transparent;
+  font-size: 15px;
+  font-family: monospace;
+  caret-color: #fff;
+}
+
+code:focus {
+  background: #2e3d44;
+}
+
+code p {
   position: relative;
-  box-shadow: -1px 15px 30px -12px black;
-  z-index: 9999;
+  margin: 0;
+  display: block;
+  white-space: pre;
+  text-align: left;
+  line-height: 24px;
+  font-size: 15px;
+  font-family: monospace;
+}
 
-  /* preview */
-  & .card-preview {
-    position: relative;
-    height: 55%;
-    max-height: 55% !important;
-    margin-bottom: 0;
-    border-top-left-radius: 14px;
-    border-top-right-radius: 14px;
+code p::before {
+  position: absolute;
+  top: 0;
+  left: -1.75rem;
+  color: #50646d;
+  content: counter(step);
+  counter-increment: step;
+}
 
-    & .card-window {
-      height: 100%;
-      align-items: center;
-
-      & .shebang {
-        position: absolute;
-        color: var(--grey-6);
-        font-size: 18px;
-        line-height: 24px;
-        top: 4px;
-        left: 12px;
-        font-style: italic;
-      }
-
-      & .code-textarea {
-        border: 1px solid var(--terminal-color); // rgb(13, 221, 240);
-        width: 100%;
-        height: 100%;
-        padding: 30px 10px 0 10px;
-        resize: none;
-        overflow-y: scroll;
-        color: var(--codeline-color);
-        font-size: 18px;
-        background: repeating-linear-gradient(var(--terminal-color) 0, var(--terminal-color) 29px, var(--grey-8) 30px, black 30px);
-        line-height: 30px;
-      }
-    }
-  }
-
-  /* fin preview */
-
-  /* content */
-  & .card-content {
-    position: relative;
-    min-height: 20% !important;
-    margin-top: 0;
-    border-bottom: 1px solid var(--grey-3);
-
-    & .card-title {
-      font-weight: 700;
-      padding: 6px 0 0 0;
-      margin: 0;
-      line-height: 2.2vh;
-    }
-
-    & .card-tags {
-      height: 10.8vh;
-      padding: 0;
-
-      & .card-tags-list {
-        margin-left: 0;
-        padding-left: 0;
-
-        li.tag {
-          display: inline-block;
-          padding: 0 5px;
-          margin: 0 5px;
-          background: var(--theme-color);
-          color: white;
-          border-radius: 5px;
-          font-size: 12px;
-          line-height: 20px;
-        }
-      }
-    }
-  }
-
-  /* fin content */
-
-  /* footer */
-  & .card-footer {
-    min-height: 20%;
-    position: relative;
-
-    & .more-button {
-      position: absolute;
-      vertical-align: middle;
-      height: 4vh;
-      width: 4vh;
-      right: 1rem;
-    }
-  }
-
-  /* fin footer */
-
-  /* mode edition */
-  &.editable {
-    height: 100vh !important;
-
-    & .card-preview {
-      height: 65% !important; //67px
-    }
-
-    & .card-content {
-      height: 15%;
-
-      & .form-field {
-        height: 100%;
-        min-height: 34px;
-        margin: 12px;
-        cursor: text;
-        border-radius: 3px;
-        // border: 1px solid var(--grey-5);
-        padding: 6px;
-        position: relative;
-
-        & .chips .chip {
-          width: auto;
-          overflow: hidden;
-          float: left;
-          background: var(--tag-color);
-          border-radius: 3px 0 0 3px;
-          color: #fff;
-          height: 30px;
-          line-height: 12px;
-          padding: 0 6px 0 12px;
-          position: relative;
-          margin: 0 10px 10px 0;
-          text-decoration: none;
-          -webkit-transition: color 0.2s;
-          font-size: 12px;
-
-          &::before {
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: inset 0 1px rgba(0, 0, 0, 0.25);
-            content: "";
-            height: 6px;
-            left: 8px;
-            position: absolute;
-            width: 6px;
-            top: 11px;
-          }
-
-          &::after {
-            background: #fff;
-            border-bottom: 15px solid transparent;
-            border-top: 15px solid transparent;
-            content: "";
-            position: absolute;
-            right: 0;
-            top: 0;
-            border-left: 12px solid var(--tag-color);
-          }
-
-          & .chip--button {
-            padding: 0 8px 0 0;
-            cursor: pointer;
-            display: inline-block;
-          }
-
-          & .chip--text {
-            padding: 8px;
-            cursor: none;
-            display: inline-block;
-            pointer-events: none;
-          }
-        }
-
-        &>label {
-          position: absolute;
-          bottom: 46px;
-          left: 0;
-          // color:green;
-          width: 100%;
-          text-align: center;
-        }
-
-        &>input {
-          padding: 15px;
-          display: block;
-          box-sizing: border-box;
-          width: 100%;
-          height: 34px;
-          margin: 5px 15% 0 15%;
-          display: inline-block;
-          background-color: transparent;
-          outline: none;
-          position: absolute;
-          border-radius: 3px;
-          bottom: 12px;
-          width: 70%;
-          left: 0;
-
-        }
-
-      }
-    }
-
-    & .card-footer {
-      button {
-        background: var(--valid-color);
-        color: white;
-        border: none;
-        border-radius: 5px;
-        padding: 10px 20px;
-        font-size: 18px;
-        cursor: pointer;
-        margin: 10px;
-        display: inline-block;
-        transition: background 0.3s;
-        position: absolute;
-        right: 0;
-        top: 1rem;
-
-        &:hover {
-          box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.175);
-        }
-      }
-    }
-  }
-
-  /* fin mode edition */
+ul.btns-group.btns-group--inline li [role=button].open-modal {
+  background-color: var(--blue-9);
+  color: #fff;
+  border: none;
+  margin: -24px 16px 0 0;
 }
 </style>

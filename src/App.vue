@@ -8,7 +8,8 @@ import Terminal from "./UI/Terminal.vue";
 import Loader from "./UI/Loader.vue";
 import Menu from "./UI/Menu.vue";
 import Modal from "./UI/Modal.vue";
-import Viewer from "./UI/Viewer.vue";
+import Editor from "./UI/Editor.vue";
+import Wysiwyg from "./UI/Wysiwyg.vue";
 
 import { Post } from "./interfaces";
 
@@ -20,12 +21,12 @@ let posts = ref<Post[]>([]);
 const loading = ref(true);
 const editor = ref<{
   open: boolean;
-  type: string;
+  type: "script" | "text";
   post: Post | null;
   is_editable: Boolean;
 }>({
   open: false,
-  type: "",
+  type: "script",
   post: null,
   is_editable: false
 });
@@ -49,7 +50,7 @@ async function delete_post(post: Post) {
   location.reload();
 }
 
-function openViewer(post: Post, is_editable: Boolean) {
+function openEditor(post: Post, is_editable: Boolean) {
   mode.value.affichage = true;
   editor.value.post = post;
   editor.value.is_editable = is_editable;
@@ -60,6 +61,8 @@ get_posts();
 </script>
 
 <template>
+
+  <!-- AFFICHAGE AU LANCEMENT DE l'APP -->
 
   <main
     v-if="!mode.edition && !mode.affichage"
@@ -87,13 +90,13 @@ get_posts();
           <Card
             :post="post"
             :editor="editor"
-            :openEditor="() => openViewer(post, true)"
+            :openEditor="() => openEditor(post, true)"
           >
 
             <Terminal
               :shebang="post.content_type"
               :lines="post.content"
-              @click="() => openViewer(post, false)"
+              @click="() => openEditor(post, false)"
             />
 
           </Card>
@@ -105,6 +108,8 @@ get_posts();
     </div>
 
   </main>
+
+  <!-- OUVERTURE DU MENU -->
 
   <main
     v-else-if="mode.edition"
@@ -118,12 +123,21 @@ get_posts();
 
   </main>
 
+  <!-- OUVERTURE DE L'EDITEUR -->
+
   <main
     v-else-if="mode.affichage"
     class="container mode-edition"
   >
 
-    <Viewer
+    <Editor
+      v-if="editor.type === 'script'"
+      :editor="editor"
+      :mode="mode"
+    />
+
+    <Wysiwyg
+      v-else
       :editor="editor"
       :mode="mode"
     />

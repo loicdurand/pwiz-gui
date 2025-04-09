@@ -28,19 +28,34 @@ export default {
       this.mode.edition = false;
       this.mode.affichage = false;
     },
-    openEditor(extension: string) {
+    openEditor() {
       this.mode.edition = false;
       this.mode.affichage = true;
+      this.editor.type = "script";
       this.editor.open = true;
       this.editor.post = {
         id: null,
-        title: 'mon_fichier.' + extension,
+        title: 'mon_fichier.sh',
         content: ["Votre contenu ici..."],
-        content_type: extension === 'sh' ? '#!/bin/bash' : '',
+        content_type: '#!/bin/bash',
         tags: []
       };
       this.editor.is_editable = true;
     },
+    openWysiwyg() {
+      this.mode.edition = false;
+      this.mode.affichage = true;
+      this.editor.type = "text";
+      this.editor.open = true;
+      this.editor.post = {
+        id: null,
+        title: 'mon document',
+        content: [],
+        content_type: '',
+        tags: []
+      };
+      this.editor.is_editable = true;
+    }
   }
 }
 </script>
@@ -78,7 +93,7 @@ export default {
       <SquareCard
         logo="sh"
         title="script"
-        @click="() => openEditor('sh')"
+        @click="openEditor"
       >
         <img src="../assets/icons/shell.png">
       </SquareCard>
@@ -90,7 +105,8 @@ export default {
     >
       <SquareCard
         logo="txt"
-        title="texte brut"
+        title="texte"
+        @click="openWysiwyg"
       >
         <img src="../assets/icons/text.png">
       </SquareCard>
