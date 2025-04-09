@@ -45,12 +45,12 @@ export default {
     },
     highlight(e: Event) {
       const target = e.currentTarget as HTMLTextAreaElement;
-      const lines = target.value.split('\r\n');
+      const lines = target.value.split("\n");
       const lang = get_lang_by_shebang(this.post.content_type);
       this.hightlighted = lang ? lines.map(line => {
         return hljs.highlight(line as string,
           { language: lang }
-        ).value
+        ).value || "\n"
       }) : lines;
     },
     mode_edit() {
