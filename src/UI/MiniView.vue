@@ -1,6 +1,6 @@
 <script lang="ts">
-import edjsHTML from 'editorjs-html';
-const edjsParser = edjsHTML();
+import Parser from 'editorjs-parser';
+const edjsParser = new Parser();
 
 export default {
   name: 'MiniView',

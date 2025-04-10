@@ -6,8 +6,10 @@ import html from 'highlight.js/lib/languages/xml';
 import css from 'highlight.js/lib/languages/css';
 import rust from 'highlight.js/lib/languages/rust';
 import python from 'highlight.js/lib/languages/python';
+import markdown from 'highlight.js/lib/languages/markdown';
+import json from 'highlight.js/lib/languages/json';
 
-[javascript, bash, php, html, css, rust, python].forEach((lang) => {
+[javascript, bash, php, html, css, rust, python, markdown, json].forEach((lang) => {
   highlight_js.registerLanguage(lang.name, lang);
 });
 
@@ -35,6 +37,11 @@ export function get_lang_by_shebang(shebang: string) {
     case '// rust':
     case '// rs':
       return 'rust';
+    case '// md':
+    case '// markdown':
+      return 'markdown';
+    case '// json':
+      return 'json';
     default:
       return '';
   }

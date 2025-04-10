@@ -1,5 +1,5 @@
 {
-  "name": "pwiz-gui",
+  "name": "pwiz",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -29,7 +29,7 @@
     "@tauri-apps/plugin-fs": "^2.2.1",
     "@tauri-apps/plugin-opener": "^2",
     "@yaireo/tagify": "^4.33.2",
-    "editorjs-html": "^4.0.5",
+    "editorjs-parser": "^1.5.3",
     "highlight.js": "^11.11.1",
     "paragraph": "^0.0.1",
     "vue": "^3.5.13"

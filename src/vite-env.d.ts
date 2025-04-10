@@ -6,6 +6,11 @@ declare module "*.vue" {
   export default component;
 }
 
+declare module 'editorjs-parser' {
+  const Parser: any;
+  export default Parser;
+}
+
 declare module '@editorjs/simple-image' {
   const SimpleImage: any;
   export default SimpleImage;

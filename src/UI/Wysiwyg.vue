@@ -4,11 +4,11 @@ import { create } from '@tauri-apps/plugin-fs';
 import { save } from '@tauri-apps/plugin-dialog';
 //import { Post } from '../interfaces';
 import EditorJS from '@editorjs/editorjs';
-import edjsHTML from 'editorjs-html';
+import Parser from 'editorjs-parser';
 import editorjs_config from '../editorjs_config';
 import Modal from "./Modal.vue";
 import TagsSelector from "./TagsSelector.vue";
-const edjsParser = edjsHTML();
+const edjsParser = new Parser();
 
 export default {
   name: "Wysiwyg",

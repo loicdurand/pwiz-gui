@@ -2,5 +2,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-    pwiz_gui_lib::run()
+    pwiz_lib::run()
 }
