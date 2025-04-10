@@ -66,7 +66,7 @@ export const //
   time = (t: number | Function = 0) => {
 
     const // 
-      cb: Function = typeof t === 'number' ? (o) => o : t,
+      cb: Function = typeof t === 'number' ? (o: any) => o : t,
       time = typeof t === 'number' ? t : 0,
       date = time ? new Date(time) : new Date(),
       Y = '' + date.getFullYear(),

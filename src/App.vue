@@ -40,7 +40,7 @@ async function get_posts() {
   loading.value = false;
 };
 
-async function delete_post(post: Post) {
+async function delete_post() {
   const menu_actif: HTMLElement | null = document.querySelector('.active.card-menu');
   if (!menu_actif)
     return;

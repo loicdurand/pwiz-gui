@@ -47,7 +47,7 @@ export default {
     },
     async download() {
       const path = await save();
-      if (path) {
+      if (path && this.editorjs !== null) {
         const file = await create(path);
         const outputData = await this.editorjs.save();
         const html = edjsParser.parse(outputData);
@@ -56,6 +56,8 @@ export default {
       }
     },
     async copy_to_clipboard(e: Event): Promise<void> {
+      if (this.editorjs === null)
+        return;
       const target = e.currentTarget as HTMLElement;
       const outputData = await this.editorjs.save();
       const html = edjsParser.parse(outputData);

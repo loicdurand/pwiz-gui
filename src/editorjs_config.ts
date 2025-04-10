@@ -11,6 +11,7 @@ import Quote from '@editorjs/quote';
 import Table from '@editorjs/table';
 import Marker from '@editorjs/marker';
 import Underline from '@editorjs/underline';
+import { EditorConfig } from '@editorjs/editorjs';
 
 export default {
   autofocus: true,
@@ -153,7 +154,7 @@ export default {
          * Each subsection is the i18n dictionary that will be passed to the corresponded plugin
          * The name of a plugin should be equal the name you specify in the 'tool' section for that plugin
          */
-        "warning": { // <-- 'Warning' tool will accept this dictionary section
+        "warning": {
           "Title": "Titre",
           "Message": "Message",
         },
@@ -200,4 +201,4 @@ export default {
       },
     }
   },
-};
+} as unknown as EditorConfig;
