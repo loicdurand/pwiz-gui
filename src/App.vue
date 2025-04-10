@@ -5,6 +5,7 @@ import { invoke } from "@tauri-apps/api/core";
 import Card from "./UI/Card.vue";
 import Header from "./UI/Header.vue";
 import Terminal from "./UI/Terminal.vue";
+import MiniView from "./UI/MiniView.vue";
 import Loader from "./UI/Loader.vue";
 import Menu from "./UI/Menu.vue";
 import Modal from "./UI/Modal.vue";
@@ -53,6 +54,7 @@ async function delete_post(post: Post) {
 function openEditor(post: Post, is_editable: Boolean) {
   mode.value.affichage = true;
   editor.value.post = post;
+  editor.value.type = post.content_type === 'text' ? 'text' : 'script';
   editor.value.is_editable = is_editable;
 }
 
@@ -94,10 +96,18 @@ get_posts();
           >
 
             <Terminal
+              v-if="post.content_type !== 'text'"
               :shebang="post.content_type"
               :lines="post.content"
               @click="() => openEditor(post, false)"
             />
+
+            <MiniView
+              v-else
+              class="post-content"
+              @click="() => openEditor(post, false)"
+              :content="post.content[0]"
+              />
 
           </Card>
 

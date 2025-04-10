@@ -16,6 +16,7 @@ export default {
   autofocus: true,
   holder: 'editorjs',
   readOnly: false,
+  data: {},
   /**
    * Tools list
    */

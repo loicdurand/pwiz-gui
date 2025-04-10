@@ -71,18 +71,23 @@ export default {
         })[m] || m;
       });
     },
-    async download(data: string) {
+    async download() {
       const path = await save();
       if (path) {
         const file = await create(path);
-        await file.write(new TextEncoder().encode(data));
+        const content: HTMLElement | null = document.getElementById('post-content');
+        const contenttype: HTMLElement | null = document.getElementById('post-contenttype');
+        await file.write(new TextEncoder().encode([
+          contenttype?.innerHTML || "",
+          (content as HTMLTextAreaElement)?.value || this.post.content.join("\r\n"),
+        ].join("\n")));
         await file.close();
       }
     },
     copy_to_clipboard(e: Event): void {
       const target = e.currentTarget as HTMLElement;
-      const content = target?.dataset.content || '';
-      navigator.clipboard.writeText(content);
+      const content: HTMLElement | null = document.getElementById('post-content');
+      navigator.clipboard.writeText((content as HTMLTextAreaElement)?.value || this.post.content.join("\r\n"));
       fadeOut(target);
 
       function fadeOut(target: HTMLElement) {
@@ -179,7 +184,6 @@ export default {
             role="button"
             tabindex="0"
             class="icon-button download-button pointer"
-            :data-content='post.content.join("\r\n")'
             @click="mode_edit"
           >
             <i
@@ -194,8 +198,7 @@ export default {
             role="button"
             tabindex="0"
             class="icon-button download-button pointer"
-            :data-content='post.content.join("\r\n")'
-            @click='download([recode(post.content_type), ...post.content].join("\r\n"))'
+            @click='download()'
           >
             <i
               class="material-icons"
@@ -370,8 +373,9 @@ pre {
     font-size: 0.75rem;
     z-index: 1;
     left: 40px;
-    &:empty:before{
-      content:'shebang?';
+
+    &:empty:before {
+      content: 'shebang?';
     }
   }
 }
@@ -392,9 +396,10 @@ code {
   max-width: 100%;
   min-height: calc(100vh - 135px);
   overflow-x: scroll;
-  &:empty:before{
-      content:'shebang?';
-    }
+
+  &:empty:before {
+    content: 'shebang?';
+  }
 
   & .controls {
     border: 1px solid var(--grey-5);

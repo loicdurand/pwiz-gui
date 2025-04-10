@@ -1,13 +1,21 @@
 <script lang="ts">
-//import { invoke } from "@tauri-apps/api/core";
+import { invoke } from "@tauri-apps/api/core";
 import { create } from '@tauri-apps/plugin-fs';
 import { save } from '@tauri-apps/plugin-dialog';
 //import { Post } from '../interfaces';
 import EditorJS from '@editorjs/editorjs';
+import edjsHTML from 'editorjs-html';
 import editorjs_config from '../editorjs_config';
+import Modal from "./Modal.vue";
+import TagsSelector from "./TagsSelector.vue";
+const edjsParser = edjsHTML();
 
 export default {
   name: "Wysiwyg",
+  components: {
+    Modal,
+    TagsSelector
+  },
   props: {
     mode: {
       type: Object,
@@ -20,6 +28,7 @@ export default {
   },
   data() {
     return {
+      editorjs: null as EditorJS | null,
       post: this.editor.post
     };
   },
@@ -27,24 +36,30 @@ export default {
     goBack() {
       this.mode.affichage = false
     },
+    openModal() {
+      document?.getElementById('set-tags-modal')?.classList.add('visible');
+    },
     mode_edit() {
       this.editor.is_editable = true;
     },
     mode_lock() {
       this.editor.is_editable = false;
     },
-    async download(data: string) {
+    async download() {
       const path = await save();
       if (path) {
         const file = await create(path);
-        await file.write(new TextEncoder().encode(data));
+        const outputData = await this.editorjs.save();
+        const html = edjsParser.parse(outputData);
+        await file.write(new TextEncoder().encode(html));
         await file.close();
       }
     },
-    copy_to_clipboard(e: Event): void {
+    async copy_to_clipboard(e: Event): Promise<void> {
       const target = e.currentTarget as HTMLElement;
-      const content = target?.dataset.content || '';
-      navigator.clipboard.writeText(content);
+      const outputData = await this.editorjs.save();
+      const html = edjsParser.parse(outputData);
+      navigator.clipboard.writeText(html);
       fadeOut(target);
 
       function fadeOut(target: HTMLElement) {
@@ -66,10 +81,41 @@ export default {
           }
         }, 100);
       }
+    },
+    async submit() {
+      if (this.editorjs === null)
+        return;
+      // recuil des valeurs de base
+      const id: HTMLElement | null = document.getElementById('post-id');
+      const title: HTMLElement | null = document.getElementById('post-title');
+      //const content: HTMLElement | null = document.getElementById('post-content');
+      const contenttype = "text";
+
+      const outputData: Object = await this.editorjs.save();
+
+      // recueil des tags
+      const chips = document.querySelectorAll(".chip--text");
+      const tags = chips ? [...chips].map(chip => chip.innerHTML) : [];
+      const post = {
+        id: (id as HTMLInputElement)?.value,
+        title: title?.innerHTML,
+        content: JSON.stringify(outputData),
+        contenttype,
+        tags: tags.join(' ')
+      };
+
+      if (!post.id)
+        await invoke('insert_post', post);
+      else
+        await invoke('update_post', post);
+      location.reload();
+
     }
   },
   mounted() {
-    const editor = new EditorJS(editorjs_config);
+    if (this.post.id !== null)
+      editorjs_config.data = JSON.parse(this.post.content);
+    this.editorjs = new EditorJS(editorjs_config);
   }
 }
 </script>
@@ -135,8 +181,7 @@ export default {
             role="button"
             tabindex="0"
             class="icon-button download-button pointer"
-            :data-content='post.content.join("\r\n")'
-            @click='download(post.content.join("\r\n"))'
+            @click='download()'
           >
             <i
               class="material-icons"
@@ -167,7 +212,7 @@ export default {
 
     <div class="pre">
       <div
-        v-if="editor.is_editable"
+        v-if="!editor.is_editable"
         class="mask"
       ></div>
       <div
@@ -176,7 +221,48 @@ export default {
       ></div>
     </div>
 
+    <ul
+      v-if="editor.is_editable"
+      class="btns-group btns-group--inline"
+    >
+
+      <li class="right"><a
+          class="confirm open-modal"
+          role="button"
+          tabindex="0"
+          href="#"
+          @click="openModal"
+        >
+          Suivant
+        </a></li>
+    </ul>
+
   </div>
+
+  <Modal id="set-tags-modal">
+    <TagsSelector :editor="editor" />
+
+    <template v-slot:header>
+      <h3>
+        Termes de recherche
+      </h3>
+    </template>
+
+    <template v-slot:footer>
+      <ul class="btns-group btns-group--inline">
+
+        <li><a
+            class="confirm"
+            role="button"
+            tabindex="0"
+            href="#"
+            @click="submit"
+          >
+            Sauvegarder
+          </a></li>
+      </ul>
+    </template>
+  </Modal>
 
 </template>
 

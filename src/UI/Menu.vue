@@ -35,7 +35,7 @@ export default {
       this.editor.open = true;
       this.editor.post = {
         id: null,
-        title: 'mon_fichier.sh',
+        title: 'mon document',
         content: ["Votre contenu ici..."],
         content_type: '#!/bin/bash',
         tags: []
