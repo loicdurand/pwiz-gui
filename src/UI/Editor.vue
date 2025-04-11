@@ -75,6 +75,7 @@ export default {
       const target = (event as MouseEvent).currentTarget as HTMLElement;
       const code = document.getElementById('code') as HTMLTextAreaElement;
       target.classList.toggle('barree');
+      target.setAttribute('title', (target.classList.contains('barree') ? "Fermer l'aperçu" : "Ouvrir l'aperçu"));
       code.classList.toggle('preview-open');
     },
     recode(str: string): string {
@@ -196,11 +197,11 @@ export default {
             role="button"
             tabindex="0"
             class="icon-button download-button pointer barree"
+            title="Fermer l'aperçu"
             @click="toggle_preview"
           >
             <i
               class="material-icons"
-              title="Ouvrir l'aperçu"
             >compare</i>
           </span>
         </li>
@@ -209,11 +210,11 @@ export default {
             role="button"
             tabindex="0"
             class="icon-button download-button pointer"
+            title="Verrouiller en édition"
             @click="mode_lock"
           >
             <i
               class="material-icons"
-              title="Verrouiller en édition"
             >lock</i>
           </span>
         </li>
@@ -222,11 +223,11 @@ export default {
             role="button"
             tabindex="0"
             class="icon-button download-button pointer"
+            title="Modifier"
             @click="mode_edit"
           >
             <i
               class="material-icons"
-              title="Modifier"
             >mode_edit</i>
           </span>
         </li>
@@ -236,11 +237,11 @@ export default {
             role="button"
             tabindex="0"
             class="icon-button download-button pointer"
+            title="Télécharger"
             @click='download()'
           >
             <i
               class="material-icons"
-              title="Télécharger"
             >vertical_align_bottom</i>
           </span>
         </li>
@@ -250,12 +251,12 @@ export default {
             tabindex="0"
             class="icon-button copy-button pointer"
             :data-content='post.content.join("\r\n")'
+            title="Copier"
             @click="copy_to_clipboard"
           >
             <span class="copied">Copié!</span>
             <i
               class="material-icons"
-              title="Copier"
             >content_copy</i>
           </span>
         </li>
