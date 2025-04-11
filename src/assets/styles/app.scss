@@ -50,6 +50,21 @@ main.container {
     width: 100%;
     margin: auto;
 
+    [role="button"].barree:before {
+        content: "";
+        display: block;
+        width: 2px;
+        height: 34px;
+        background: rgba(117, 117, 117, 1);
+        position: absolute;
+        left: 10px;
+        bottom: 2px;
+    }
+
+    [role="button"].barree:before {
+        transform: rotate(45deg);
+    }
+
     .pointer {
         cursor: pointer;
     }
@@ -132,6 +147,7 @@ ul.btns-group.btns-group--inline {
             &:hover {
                 box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.175);
             }
+
         }
     }
 }

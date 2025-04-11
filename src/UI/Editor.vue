@@ -71,6 +71,12 @@ export default {
     mode_lock() {
       this.editor.is_editable = false;
     },
+    toggle_preview(event: Event) {
+      const target = (event as MouseEvent).currentTarget as HTMLElement;
+      const code = document.getElementById('code') as HTMLTextAreaElement;
+      target.classList.toggle('barree');
+      code.classList.toggle('preview-open');
+    },
     recode(str: string): string {
       return str.replace(/&amp;|&lt;|&gt;|&quot;|&#039;/g, (m: string) => {
         return ({
@@ -189,7 +195,8 @@ export default {
           <span
             role="button"
             tabindex="0"
-            class="icon-button download-button pointer"
+            class="icon-button download-button pointer barree"
+            @click="toggle_preview"
           >
             <i
               class="material-icons"
@@ -259,7 +266,7 @@ export default {
     </div>
     <pre>
     <p class="shebang" :class="{ 'hidden': editor.type === 'markdown' }" id="post-contenttype" v-html="post.content_type" :contenteditable="editor.is_editable" title='Shebang pour ce script (ex: #!/bin/bash, mais aussi <?php, <html lang="fr">, etc...)'/>
-    <code :class="{ 'preview-open': editor.type === 'markdown' }">
+    <code id="code" :class="{ 'preview-open': editor.type === 'markdown' }">
       <p v-for="line in hightlighted" v-html="line"/>
       <textarea 
       id="post-content"
@@ -268,11 +275,13 @@ export default {
       @keyup="highlight"
        />
     </code>
-    <div class="markdown-preview-ctnr" v-if="editor.type === 'markdown'">
-      <div class="separator">
-        <div class="poignee">
+    
+    <div class="separator">
+        <div class="poignee" id="poignee">
         </div>
       </div>
+
+    <div class="markdown-preview-ctnr" v-if="editor.type === 'markdown'">
       <iframe
         class="markdown-preview"
         type="text/html"
@@ -420,6 +429,39 @@ pre {
       content: 'shebang?';
     }
   }
+
+  & .separator {
+    position: absolute;
+    left: 60%;
+    top: 0;
+    width: 1px;
+    height: 100%;
+
+    & .poignee {
+      width: 7px;
+      height: 20%;
+      position: absolute;
+      left: -3px;
+      top: 40%;
+      z-index: 1;
+      border-radius: 3px;
+      cursor: grab;
+      background: repeating-linear-gradient(90deg,
+          var(--grey-5) 1px,
+          var(--grey-7) 1px,
+          var(--grey-3) 4px,
+          transparent 4px);
+      border: 1px solid var(--grey-7);
+
+      &.dragging {
+        background: repeating-linear-gradient(90deg,
+            var(--red-5) 1px,
+            var(--red-7) 1px,
+            var(--red-3) 4px,
+            transparent 4px);
+      }
+    }
+  }
 }
 
 code {
@@ -458,9 +500,20 @@ code {
     }
   }
 
+  &+.separator,
+  &+.separator .poignee,
+  &+.separator+.markdown-preview-ctnr {
+    display: none;
+  }
+
   &.preview-open {
     width: 60%;
     margin-right: 0;
+
+    &+.separator,
+    &+.separator+.markdown-preview-ctnr {
+      display: block;
+    }
   }
 }
 
@@ -472,31 +525,6 @@ code {
   margin-right: 1rem;
   min-height: calc(100vh - 135px);
   position: relative;
-
-  & .separator {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 1px;
-    height: 100%;
-
-    & .poignee {
-      width: 7px;
-      height: 20%;
-      position: absolute;
-      left: -3px;
-      top: 40%;
-      z-index: 1;
-      border-radius: 3px;
-      cursor: grab;
-      background: repeating-linear-gradient(90deg,
-          var(--grey-5) 1px,
-          var(--grey-7) 1px,
-          var(--grey-3) 4px,
-          transparent 4px);
-      border: 1px solid var(--grey-7);
-    }
-  }
 
   & .markdown-preview {
     width: 100%;
