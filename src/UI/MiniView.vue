@@ -17,7 +17,7 @@ export default {
     }
   },
   data() {
-    if (this.shebang === '// markdown') {
+    if (this.shebang === '<!-- markdown -->') {
       return {
         html: converter.makeHtml(this.content.join("\n"))
       };

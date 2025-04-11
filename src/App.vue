@@ -54,7 +54,7 @@ async function delete_post() {
 function openEditor(post: Post, is_editable: Boolean) {
   mode.value.affichage = true;
   editor.value.post = post;
-  editor.value.type = post.content_type === 'text' ? 'text' : post.content_type === '// markdown' ? 'markdown' : 'script';
+  editor.value.type = post.content_type === 'text' ? 'text' : post.content_type === '<!-- markdown -->' ? 'markdown' : 'script';
   editor.value.is_editable = is_editable;
 }
 
@@ -96,7 +96,7 @@ get_posts();
           >
 
             <Terminal
-              v-if="!['text', '// markdown'].includes(post.content_type)"
+              v-if="!['text', '<!-- markdown -->'].includes(post.content_type)"
               :shebang="post.content_type"
               :lines="post.content"
               @click="() => openEditor(post, false)"

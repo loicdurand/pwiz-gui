@@ -38,7 +38,7 @@ export function get_lang_by_shebang(shebang: string) {
     case '// rs':
       return 'rust';
     case '// md':
-    case '// markdown':
+    case '<!-- markdown -->':
       return 'markdown';
     case '// json':
       return 'json';

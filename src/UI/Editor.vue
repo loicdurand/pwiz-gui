@@ -268,7 +268,17 @@ export default {
       @keyup="highlight"
        />
     </code>
-    <iframe sandbox="" class="markdown-preview" v-if="editor.type === 'markdown'"></iframe>
+    <div class="markdown-preview-ctnr" v-if="editor.type === 'markdown'">
+      <div class="separator">
+        <div class="poignee">
+        </div>
+      </div>
+      <iframe
+        class="markdown-preview"
+        type="text/html"
+        sandbox=""
+      ></iframe>
+    </div>
 </pre>
 
     <ul
@@ -454,15 +464,50 @@ code {
   }
 }
 
-.markdown-preview {
+.markdown-preview-ctnr {
   border: 1px solid var(--grey-5);
   border-top: 0px;
   height: 100%;
   width: 40%;
   margin-right: 1rem;
   min-height: calc(100vh - 135px);
-  overflow-x: scroll;
   position: relative;
+
+  & .separator {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1px;
+    height: 100%;
+
+    & .poignee {
+      width: 7px;
+      height: 20%;
+      position: absolute;
+      left: -3px;
+      top: 40%;
+      z-index: 1;
+      border-radius: 3px;
+      cursor: grab;
+      background: repeating-linear-gradient(90deg,
+          var(--grey-5) 1px,
+          var(--grey-7) 1px,
+          var(--grey-3) 4px,
+          transparent 4px);
+      border: 1px solid var(--grey-7);
+    }
+  }
+
+  & .markdown-preview {
+    width: 100%;
+    height: 100%;
+    // border: none;
+    background-color: transparent;
+    overflow-x: scroll;
+    left: 0;
+    position: absolute;
+    top: 0;
+  }
 }
 
 textarea {

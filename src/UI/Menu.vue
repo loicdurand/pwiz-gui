@@ -51,7 +51,7 @@ export default {
         id: null,
         title: 'Dire bonjour en Markdown',
         content: ["# Bonjour", '## Le monde!'],
-        content_type: '// markdown',
+        content_type: '<!-- markdown -->',
         tags: []
       };
       this.openEditor();
