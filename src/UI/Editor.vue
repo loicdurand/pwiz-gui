@@ -4,6 +4,7 @@ import { create } from '@tauri-apps/plugin-fs';
 import { save } from '@tauri-apps/plugin-dialog';
 import { Post } from '../interfaces';
 import { hljs, get_lang_by_shebang } from '../hljs_init';
+import showdown from 'showdown';
 import Modal from "./Modal.vue";
 import TagsSelector from "./TagsSelector.vue";
 
@@ -27,13 +28,15 @@ export default {
     const post = this.editor.post as Post;
     const lines = post.content;
     const lang = get_lang_by_shebang(post.content_type);
+
     return {
       post,
       hightlighted: lang ? lines.map(line => {
         return hljs.highlight(line as string,
           { language: lang }
         ).value
-      }) : lines
+      }) : lines,
+      converter: new showdown.Converter(),
     }
   },
   methods: {
@@ -43,8 +46,10 @@ export default {
     openModal() {
       document?.getElementById('set-tags-modal')?.classList.add('visible');
     },
-    highlight(e: Event) {
-      const target = e.currentTarget as HTMLTextAreaElement;
+    async highlight(e: Event) {
+      const target = e.target as HTMLTextAreaElement;
+      if (target === null)
+        return;
       const lines = target.value.split("\n");
       const shebang = document.getElementById('post-contenttype') as HTMLParagraphElement;
       const lang = get_lang_by_shebang(shebang.innerHTML.trim());
@@ -53,6 +58,12 @@ export default {
           { language: lang }
         ).value || "\n"
       }) : lines;
+
+      if (this.editor.type === 'markdown') {
+        const html = (this.converter as showdown.Converter).makeHtml(target.value);
+        const preview = document.querySelector('.markdown-preview') as HTMLObjectElement;
+        preview.setAttribute('srcdoc', html);
+      }
     },
     mode_edit() {
       this.editor.is_editable = true;
@@ -135,7 +146,15 @@ export default {
       location.reload();
     }
 
-  }
+  },
+  mounted() {
+    if (this.editor.type === 'markdown') {
+      const html = (this.converter as showdown.Converter).makeHtml(this.post.content.join("\n"));
+      const preview = document.querySelector('.markdown-preview') as HTMLObjectElement;
+      if (preview !== null)
+        preview.setAttribute('srcdoc', html);
+    }
+  },
 }
 </script>
 
@@ -166,6 +185,18 @@ export default {
     <div class="controls">
       <div class="infos">{{ post.content.length }} lignes - {{ post.content.filter(Boolean).length }} non vides</div>
       <ul>
+        <li v-if="editor.type === 'markdown'">
+          <span
+            role="button"
+            tabindex="0"
+            class="icon-button download-button pointer"
+          >
+            <i
+              class="material-icons"
+              title="Ouvrir l'aperçu"
+            >compare</i>
+          </span>
+        </li>
         <li v-if="editor.is_editable">
           <span
             role="button"
@@ -227,8 +258,8 @@ export default {
 
     </div>
     <pre>
-    <p class="shebang" id="post-contenttype" v-html="post.content_type" :contenteditable="editor.is_editable" title='Shebang pour ce script (ex: #!/bin/bash, mais aussi <?php, <html lang="fr">, etc...)'/>
-    <code>
+    <p class="shebang" :class="{ 'hidden': editor.type === 'markdown' }" id="post-contenttype" v-html="post.content_type" :contenteditable="editor.is_editable" title='Shebang pour ce script (ex: #!/bin/bash, mais aussi <?php, <html lang="fr">, etc...)'/>
+    <code :class="{ 'preview-open': editor.type === 'markdown' }">
       <p v-for="line in hightlighted" v-html="line"/>
       <textarea 
       id="post-content"
@@ -237,6 +268,7 @@ export default {
       @keyup="highlight"
        />
     </code>
+    <iframe sandbox="" class="markdown-preview" v-if="editor.type === 'markdown'"></iframe>
 </pre>
 
     <ul
@@ -415,6 +447,22 @@ code {
       position: relative;
     }
   }
+
+  &.preview-open {
+    width: 60%;
+    margin-right: 0;
+  }
+}
+
+.markdown-preview {
+  border: 1px solid var(--grey-5);
+  border-top: 0px;
+  height: 100%;
+  width: 40%;
+  margin-right: 1rem;
+  min-height: calc(100vh - 135px);
+  overflow-x: scroll;
+  position: relative;
 }
 
 textarea {

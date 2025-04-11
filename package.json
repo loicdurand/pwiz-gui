@@ -32,10 +32,12 @@
     "editorjs-parser": "^1.5.3",
     "highlight.js": "^11.11.1",
     "paragraph": "^0.0.1",
+    "showdown": "^2.1.0",
     "vue": "^3.5.13"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2",
+    "@types/showdown": "^2.0.6",
     "@vitejs/plugin-vue": "^5.2.1",
     "sass-embedded": "^1.86.0",
     "typescript": "~5.6.2",

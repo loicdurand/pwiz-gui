@@ -22,7 +22,7 @@ let posts = ref<Post[]>([]);
 const loading = ref(true);
 const editor = ref<{
   open: boolean;
-  type: "script" | "text";
+  type: "script" | "text" | "markdown";
   post: Post | null;
   is_editable: Boolean;
 }>({
@@ -54,7 +54,7 @@ async function delete_post() {
 function openEditor(post: Post, is_editable: Boolean) {
   mode.value.affichage = true;
   editor.value.post = post;
-  editor.value.type = post.content_type === 'text' ? 'text' : 'script';
+  editor.value.type = post.content_type === 'text' ? 'text' : post.content_type === '// markdown' ? 'markdown' : 'script';
   editor.value.is_editable = is_editable;
 }
 
@@ -96,7 +96,7 @@ get_posts();
           >
 
             <Terminal
-              v-if="post.content_type !== 'text'"
+              v-if="!['text', '// markdown'].includes(post.content_type)"
               :shebang="post.content_type"
               :lines="post.content"
               @click="() => openEditor(post, false)"
@@ -106,8 +106,9 @@ get_posts();
               v-else
               class="post-content"
               @click="() => openEditor(post, false)"
-              :content="post.content[0]"
-              />
+              :content="post.content"
+              :shebang="post.content_type"
+            />
 
           </Card>
 
@@ -141,7 +142,7 @@ get_posts();
   >
 
     <Editor
-      v-if="editor.type === 'script'"
+      v-if="['script', 'markdown'].includes(editor.type)"
       :editor="editor"
       :mode="mode"
     />

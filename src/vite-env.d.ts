@@ -35,3 +35,8 @@ declare module '@editorjs/marker' {
   const Marker: any;
   export default Marker;
 }
+
+declare module 'showdown' {
+  const showdown: any;
+  export default showdown;
+}

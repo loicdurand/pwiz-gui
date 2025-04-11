@@ -1,17 +1,29 @@
 <script lang="ts">
+import showdown from 'showdown';
 import Parser from 'editorjs-parser';
 const edjsParser = new Parser();
+const converter = new showdown.Converter();
 
 export default {
   name: 'MiniView',
   props: {
-    content: {
+    shebang: {
       type: String,
+      required: true
+    },
+    content: {
+      type: Array<string>,
       required: true
     }
   },
   data() {
-    const outputData = JSON.parse(this.content);
+    if (this.shebang === '// markdown') {
+      return {
+        html: converter.makeHtml(this.content.join("\n"))
+      };
+    }
+    const content = this.content[0];
+    const outputData = JSON.parse(content);
     const html = edjsParser.parse(outputData);
     return { html };
   }

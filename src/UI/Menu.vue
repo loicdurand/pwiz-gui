@@ -29,18 +29,32 @@ export default {
       this.mode.affichage = false;
     },
     openEditor() {
+      this.editor.open = true;
       this.mode.edition = false;
       this.mode.affichage = true;
+      this.editor.is_editable = true;
+    },
+    openScriptEditor() {
       this.editor.type = "script";
-      this.editor.open = true;
       this.editor.post = {
         id: null,
-        title: 'mon document',
-        content: ["Votre contenu ici..."],
+        title: 'Dire bonjour en Shell',
+        content: ["echo 'Bonjour'"],
         content_type: '#!/bin/bash',
         tags: []
       };
-      this.editor.is_editable = true;
+      this.openEditor();
+    },
+    openMarkDownEditor() {
+      this.editor.type = "markdown";
+      this.editor.post = {
+        id: null,
+        title: 'Dire bonjour en Markdown',
+        content: ["# Bonjour", '## Le monde!'],
+        content_type: '// markdown',
+        tags: []
+      };
+      this.openEditor();
     },
     openWysiwyg() {
       this.mode.edition = false;
@@ -93,7 +107,7 @@ export default {
       <SquareCard
         logo="sh"
         title="script"
-        @click="openEditor"
+        @click="openScriptEditor"
       >
         <img src="../assets/icons/shell.png">
       </SquareCard>
@@ -119,6 +133,7 @@ export default {
       <SquareCard
         logo="md"
         title="markdown"
+        @click="openMarkDownEditor"
       >
         <img src="../assets/icons/markdown.png">
       </SquareCard>
