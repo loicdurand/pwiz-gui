@@ -1,6 +1,6 @@
 <script lang="ts">
 
-import { hljs,get_lang_by_shebang } from '../hljs_init';
+import { hljs, get_lang_by_shebang } from '../hljs_init';
 
 export default {
   name: 'Terminal',
@@ -43,18 +43,18 @@ export default {
   <pre class="terminal">
     <code >
 
-<p class="shebang" v-html="shebang" />
+      <p class="shebang" v-html="shebang" />
 
 
-<br>
-<span v-for="line in hightlighted">
-  <!--<span class="green">~</span><span class="blue">❯&nbsp;</span>>-->
-  
-  <span class="line" v-html="line"/>
-  
-  <br>
-</span>
-</code>
+      <br>
+      <span v-for="line in hightlighted">
+        <!--<span class="green">~</span><span class="blue">❯&nbsp;</span>>-->
+        
+        <span class="line" v-html="line"/>
+        
+        <br>
+      </span>
+    </code>
   </pre>
 
 </template>

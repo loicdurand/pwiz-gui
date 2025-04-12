@@ -409,7 +409,7 @@ export default {
         height: 30px;
         z-index: 9;
         cursor: pointer;
-        -webkit-transition: all 0.25s linear;
+        transition: all 0.25s linear;
 
         & a {
           color: inherit;
@@ -431,7 +431,6 @@ export default {
         left: 20px;
         z-index: 5;
         transition: border .25s linear;
-        -webkit-transition: border .25s linear;
       }
 
       & ul li:hover .check {
@@ -448,8 +447,7 @@ export default {
         top: 5px;
         left: 5px;
         margin: auto;
-        transition: background 0.25s linear;
-        -webkit-transition: background 0.25s linear;
+        transition: background-color 0.25s linear;
       }
 
       & input[type=radio]:checked~.check {
@@ -457,7 +455,7 @@ export default {
       }
 
       & input[type=radio]:checked~.check::before {
-        background: var(--theme-color);
+        background-color: var(--theme-color);
       }
 
       & input[type=radio]:checked~label {
