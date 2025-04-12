@@ -6,6 +6,10 @@ import { time_format, shebang_to_type } from '../utils';
 import { Post } from '../interfaces';
 import Tag from './Tag.vue';
 import { get_lang_by_shebang } from '../hljs_init';
+import showdown from 'showdown';
+import Parser from 'editorjs-parser';
+const edjsParser = new Parser();
+const converter = new showdown.Converter();
 
 function fadeOut(target: HTMLElement) {
   const fadeTarget = target.querySelector('.copied') as HTMLElement | null;
@@ -54,12 +58,25 @@ export default {
         })[m] || m;
       });
     },
-    async download(data: string) {
+    async download(post: Post) {
+      const contenttype = this.recode(post.content_type);
+      const content = post.content;
+      const data = convert(contenttype, content);
       const path = await save();
       if (path) {
         const file = await create(path);
         await file.write(new TextEncoder().encode(data));
         await file.close();
+      }
+      function convert(contenttype: string, content: string[]): string {
+        if (!['text', '<!-- markdown -->'].includes(contenttype))
+          return [contenttype, ...content].join("\n");
+
+        if (contenttype === '<!-- markdown -->')
+          return converter.makeHtml(content.join("\n"));
+
+        const outputData = JSON.parse(content[0]);
+        return edjsParser.parse(outputData);
       }
     },
     async show_details(post: Post) {
@@ -195,7 +212,7 @@ export default {
               type="radio"
               :id="'dl-option-' + post.id"
               name="selector"
-              @change='download([recode(post.content_type), ...post.content].join("\r\n"))'
+              @change='download(post)'
             >
             <label :for="'dl-option-' + post.id">Télécharger</label>
 
