@@ -1,17 +1,17 @@
-import highlight_js from 'highlight.js/lib/core';
-import javascript from 'highlight.js/lib/languages/javascript';
-import bash from 'highlight.js/lib/languages/bash';
-import php from 'highlight.js/lib/languages/php';
-import html from 'highlight.js/lib/languages/xml';
-import css from 'highlight.js/lib/languages/css';
-import rust from 'highlight.js/lib/languages/rust';
-import python from 'highlight.js/lib/languages/python';
-import markdown from 'highlight.js/lib/languages/markdown';
-import json from 'highlight.js/lib/languages/json';
+import highlight_js from 'highlight.js/lib/common';
+// import javascript from 'highlight.js/lib/languages/javascript';
+// import bash from 'highlight.js/lib/languages/bash';
+// import php from 'highlight.js/lib/languages/php';
+// import html from 'highlight.js/lib/languages/xml';
+// import css from 'highlight.js/lib/languages/css';
+// import rust from 'highlight.js/lib/languages/rust';
+// import python from 'highlight.js/lib/languages/python';
+// import markdown from 'highlight.js/lib/languages/markdown';
+// import json from 'highlight.js/lib/languages/json';
 
-[javascript, bash, php, html, css, rust, python, markdown, json].forEach((lang) => {
-  highlight_js.registerLanguage(lang.name, lang);
-});
+// [javascript, bash, php, html, css, rust, python, markdown, json].forEach((lang) => {
+//   highlight_js.registerLanguage(lang.name, lang);
+// });
 
 export const hljs = highlight_js;
 
