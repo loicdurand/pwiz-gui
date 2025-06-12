@@ -9,7 +9,7 @@ import Modal from "./Modal.vue";
 import TagsSelector from "./TagsSelector.vue";
 
 export default {
-  name: 'Editor',
+  name: 'LinkEditor',
   components: {
     Modal,
     TagsSelector
@@ -559,10 +559,6 @@ code p {
   line-height: 24px;
   font-size: 15px;
   font-family: monospace;
-
-  &:empty {
-    min-height: 24px;
-  }
 }
 
 code p::before {

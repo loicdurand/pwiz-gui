@@ -11,6 +11,7 @@ import Menu from "./UI/Menu.vue";
 import Modal from "./UI/Modal.vue";
 import Editor from "./UI/Editor.vue";
 import Wysiwyg from "./UI/Wysiwyg.vue";
+import LinkEditor from "./UI/LinkEditor.vue";
 
 import { Post } from "./interfaces";
 
@@ -22,7 +23,7 @@ let posts = ref<Post[]>([]);
 const loading = ref(true);
 const editor = ref<{
   open: boolean;
-  type: "script" | "text" | "markdown";
+  type: "script" | "text" | "link" | "markdown";
   post: Post | null;
   is_editable: Boolean;
 }>({
@@ -146,6 +147,12 @@ get_posts();
       :editor="editor"
       :mode="mode"
     />
+
+    <LinkEditor
+      v-else-if="editor.type === 'link'"
+      :editor="editor"
+      :mode="mode"
+    >test</LinkEditor>
 
     <Wysiwyg
       v-else

@@ -69,6 +69,17 @@ export default {
         tags: []
       };
       this.editor.is_editable = true;
+    },
+    openLinkEditor() {
+      this.editor.type = "link";
+      this.editor.post = {
+        id: null,
+        title: 'Création d\'un lien',
+        content: ["echo 'Bonjour'"],
+        content_type: '// http-link',
+        tags: []
+      };
+      this.openEditor();
     }
   }
 }
@@ -146,6 +157,7 @@ export default {
       <SquareCard
         logo="link"
         title="lien"
+        @click="openLinkEditor"
       >
         <img src="../assets/icons/link.png">
       </SquareCard>
